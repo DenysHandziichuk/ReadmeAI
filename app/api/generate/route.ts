@@ -1,32 +1,46 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+
+import { fetchRepoFiles } from "@/lib/github/repo-files";
+import { analyzeRepo } from "@/lib/analyzer";
+import { generateReadme } from "@/lib/readme/generator";
 
 export async function POST(req: Request) {
-  let body;
+  const cookieStore = await cookies();
+  const token = cookieStore.get("gh_token")?.value;
 
-  try {
-    body = await req.json();
-  } catch {
+  if (!token) {
     return NextResponse.json(
-      { error: "Invalid JSON body" },
-      { status: 400 }
+      { error: "Not authenticated" },
+      { status: 401 }
     );
   }
 
-  console.log("Generate body:", body);
-
-  const { owner, repo } = body;
+  const { owner, repo } = await req.json();
 
   if (!owner || !repo) {
     return NextResponse.json(
-      { error: "Missing owner or repo", body },
+      { error: "Missing owner or repo" },
       { status: 400 }
     );
   }
 
-  const readme = `# ${owner}/${repo}
+  try {
+    const files = await fetchRepoFiles(owner, repo, token);
 
-Generated README.
-`;
+    const analysis = analyzeRepo(files);
 
-  return NextResponse.json({ readme });
+    const readme = generateReadme(owner, repo, analysis);
+
+    return NextResponse.json({
+      analysis,
+      readme,
+    });
+  } catch (err) {
+    console.error("Generate README error:", err);
+    return NextResponse.json(
+      { error: "Failed to generate README" },
+      { status: 500 }
+    );
+  }
 }

@@ -13,10 +13,9 @@ import { selectImportantFiles } from "@/lib/analyzer/select-files";
 import { groqRewrite } from "@/lib/groq/client";
 import { buildGroqPrompt } from "@/lib/readme/groq-prompt";
 import { buildReadmeTemplate } from "@/lib/readme/template";
-import { generateBadges } from "@/lib/readme/badges";
+import { generateBadges } from "@/lib/readme/generateBadges";
 
 export async function POST(req: Request) {
-  console.log("🔥 GENERATE ROUTE HIT 🔥");
 
   const cookieStore = await cookies();
   const token = cookieStore.get("gh_token")?.value;
@@ -67,6 +66,10 @@ export async function POST(req: Request) {
     const techStack = `- Languages: ${analysis.languages.join(", ") || "None"}
 - Frameworks: ${analysis.frameworks.join(", ") || "None"}`;
 
+    console.log("LANGUAGES FOR BADGES:", analysis.languages);
+    console.log("FRAMEWORKS FOR BADGES:", analysis.frameworks);
+
+
     // 5️⃣ Badges
     const badges = generateBadges(
       analysis.languages,
@@ -91,7 +94,6 @@ export async function POST(req: Request) {
     const readme = buildReadmeTemplate({
       title: `${owner}/${repo}`,
       badges,
-      techStack,
       description,
       features,
       installation,

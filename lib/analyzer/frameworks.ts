@@ -1,23 +1,34 @@
 export function detectFrameworks(files: string[]): string[] {
   const frameworks = new Set<string>();
 
-  if (files.includes("next.config.js")) frameworks.add("Next.js");
-  if (files.includes("next.config.ts")) frameworks.add("Next.js");
+  const hasSource = files.some(f =>
+    f.includes("/src/") ||
+    f.startsWith("src/")
+  );
 
-  if (files.some(f => f.startsWith("vite.config"))) frameworks.add("Vite");
+  const hasReactSource = files.some(
+    f =>
+      (f.endsWith(".jsx") || f.endsWith(".tsx")) &&
+      (f.includes("/src/") || f.startsWith("src/"))
+  );
 
-  if (files.includes("package.json")) frameworks.add("React");
+  const hasViteConfig = files.some(f =>
+    f.includes("vite.config")
+  );
 
-  if (files.includes("requirements.txt")) frameworks.add("Python");
+  const hasPlatformIO = files.includes("platformio.ini");
 
-  if (files.includes("platformio.ini")) frameworks.add("PlatformIO");
-  if (files.some(f => f.endsWith(".ino"))) frameworks.add("Arduino");
+  if (hasPlatformIO) {
+    frameworks.add("PlatformIO");
+  }
 
-  if (files.includes("next.config.js") || files.includes("next.config.ts"))
-    frameworks.add("Next.js");
+  if (hasReactSource) {
+    frameworks.add("React");
+  }
 
-  if (files.some(f => f.startsWith("vite.config")))
+  if (hasViteConfig && hasSource) {
     frameworks.add("Vite");
+  }
 
   return Array.from(frameworks);
 }

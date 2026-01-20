@@ -3,6 +3,9 @@ import { cookies } from "next/headers";
 import { generateReadme } from "@/lib/readme/generator";
 import { fetchRepoFiles } from "@/lib/github/repo-files";
 import { analyzeRepo } from "@/lib/analyzer";
+import { fetchRepoFileContent } from "@/lib/github/repo-content";
+import { selectImportantFiles } from "@/lib/analyzer/select-files";
+
 
 export async function POST(req: Request) {
   const cookieStore = await cookies();
@@ -30,6 +33,18 @@ export async function POST(req: Request) {
 
     // 2️⃣ Analyze repo
     const analysis = analyzeRepo(files);
+
+    const importantFiles = selectImportantFiles(files);
+
+    const fileContents: Record<string, string> = {};
+
+    for (const path of importantFiles) {
+      const content = await fetchRepoFileContent(owner, repo, path, token);
+      if (content && content.length < 4000) {
+        fileContents[path] = content;
+        }
+      }
+
 
     // 3️⃣ Generate README using FACTS
     const readme = generateReadme(owner, repo, analysis);

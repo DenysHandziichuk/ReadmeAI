@@ -35,5 +35,13 @@ export function detectProjectType(
 
   if (languages.includes("Python")) return "python";
 
+  if (
+  files.some(f => f.endsWith(".html")) &&
+  !files.includes("package.json")
+) {
+  return "static-web";
+}
+
+
   return "unknown";
 }

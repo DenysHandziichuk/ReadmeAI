@@ -22,6 +22,15 @@ export function generateReadme(
   let install = "No installation required.";
   let usage = "See source code for usage.";
 
+  if (packageManager === "pip") {
+    install = "pip install -r requirements.txt";
+    usage = "python main.py";
+  } else if (packageManager === "poetry") {
+    install = "poetry install";
+    usage = "poetry run python main.py";
+  }
+
+
   if (packageManager === "npm") {
     install = "npm install";
     usage = "npm run dev";

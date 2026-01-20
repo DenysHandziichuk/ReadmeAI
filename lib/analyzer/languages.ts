@@ -1,40 +1,70 @@
 export function detectLanguages(files: string[]): string[] {
-  const isSourceFile = (f: string) =>
-  f.includes("/src/") ||
-  f.includes("/app/") ||
-  f.includes("/pages/") ||
-  f.startsWith("src/") ||
-  f.startsWith("app/") ||
-  f.startsWith("pages/");
+  const isJsTsSource = (f: string) =>
+    f.includes("/src/") ||
+    f.includes("/app/") ||
+    f.includes("/pages/") ||
+    f.startsWith("src/") ||
+    f.startsWith("app/") ||
+    f.startsWith("pages/");
 
-  const hasArduino = files.some(f => f.endsWith(".ino"));
-  const hasCpp = files.some(f => f.endsWith(".cpp"));
-  const hasC = files.some(f => f.endsWith(".c"));
+  const isIgnored = (f: string) =>
+    f.includes("node_modules") ||
+    f.endsWith(".d.ts") ||
+    f.includes(".config.") ||
+    f.includes("vite.config") ||
+    f.includes("webpack") ||
+    f.includes("eslint") ||
+    f.includes("tsconfig") ||
+    f.includes("/dist/") ||
+    f.includes("/build/");
 
-  const hasTsSource = files.some(
-    f =>
-      isSourceFile(f) &&
-      (f.endsWith(".ts") || f.endsWith(".tsx")) &&
-      !f.endsWith(".d.ts")
+  // --- STATIC FILES (ROOT-LEVEL ALLOWED) ---
+  const hasHtml = files.some(f => f.endsWith(".html"));
+  const hasCss = files.some(f =>
+    f.endsWith(".css") || f.endsWith(".scss")
   );
 
-  const hasJsSource = files.some(
-    f =>
-      isSourceFile(f) &&
-      (f.endsWith(".js") || f.endsWith(".jsx"))
+  // --- SOURCE FILES (JS / TS ONLY) ---
+  const sourceFiles = files.filter(
+    f => isJsTsSource(f) && !isIgnored(f)
   );
 
-  const hasPy = files.some(f => f.endsWith(".py"));
-  const hasGo = files.some(f => f.endsWith(".go"));
+  const hasTs = sourceFiles.some(
+    f => f.endsWith(".ts") || f.endsWith(".tsx")
+  );
+
+  const hasJs = sourceFiles.some(
+    f => f.endsWith(".js") || f.endsWith(".jsx")
+  );
+
+  const hasArduino = sourceFiles.some(f => f.endsWith(".ino"));
+  const hasCpp = sourceFiles.some(f => f.endsWith(".cpp"));
+  const hasC = sourceFiles.some(f => f.endsWith(".c"));
+  const hasPy = sourceFiles.some(f => f.endsWith(".py"));
+  const hasGo = sourceFiles.some(f => f.endsWith(".go"));
 
   // Embedded FIRST
   if (hasArduino) return ["Arduino", "C++"];
   if (hasCpp) return ["C++"];
   if (hasC) return ["C"];
 
-  // Prefer TypeScript ONLY if used in source
-  if (hasTsSource) return ["TypeScript"];
-  if (hasJsSource) return ["JavaScript"];
+  // Static web (HTML/CSS only)
+  if ((hasHtml || hasCss) && !hasJs && !hasTs) {
+    const langs: string[] = [];
+    if (hasHtml) langs.push("HTML");
+    if (hasCss) langs.push("CSS");
+    return langs;
+  }
+
+  // Web apps
+  if (hasTs) return ["TypeScript"];
+  if (hasJs) {
+    const langs: string[] = [];
+    if (hasHtml) langs.push("HTML");
+    if (hasCss) langs.push("CSS");
+    langs.push("JavaScript");
+    return langs;
+  }
 
   if (hasPy) return ["Python"];
   if (hasGo) return ["Go"];

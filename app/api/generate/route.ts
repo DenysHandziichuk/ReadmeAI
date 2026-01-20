@@ -1,19 +1,28 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
+import { detectProjectType } from "@/lib/analyzer/project-type";
+import { generateInstallAndUsage } from "@/lib/readme/install-usage";
+
 import { fetchRepoFiles } from "@/lib/github/repo-files";
 import { analyzeRepo } from "@/lib/analyzer";
-import { generateReadme } from "@/lib/readme/generator";
+
+import { fetchRepoFileContent } from "@/lib/github/repo-content";
+import { selectImportantFiles } from "@/lib/analyzer/select-files";
+
+import { groqRewrite } from "@/lib/groq/client";
+import { buildGroqPrompt } from "@/lib/readme/groq-prompt";
+import { buildReadmeTemplate } from "@/lib/readme/template";
+import { generateBadges } from "@/lib/readme/badges";
 
 export async function POST(req: Request) {
+  console.log("🔥 GENERATE ROUTE HIT 🔥");
+
   const cookieStore = await cookies();
   const token = cookieStore.get("gh_token")?.value;
 
   if (!token) {
-    return NextResponse.json(
-      { error: "Not authenticated" },
-      { status: 401 }
-    );
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
   const { owner, repo } = await req.json();
@@ -26,16 +35,70 @@ export async function POST(req: Request) {
   }
 
   try {
+    // 1️⃣ Fetch repo files
     const files = await fetchRepoFiles(owner, repo, token);
 
+    // 2️⃣ Analyze repo
     const analysis = analyzeRepo(files);
 
-    const readme = generateReadme(owner, repo, analysis);
+    const projectType = detectProjectType(
+      files,
+      analysis.languages,
+      analysis.frameworks
+    );
 
-    return NextResponse.json({
-      analysis,
-      readme,
+    const { installation, usage } = generateInstallAndUsage(
+      projectType,
+      files
+    );
+
+    // 3️⃣ Select & read important files
+    const importantFiles = selectImportantFiles(files);
+
+    const fileContents: Record<string, string> = {};
+    for (const path of importantFiles) {
+      const content = await fetchRepoFileContent(owner, repo, path, token);
+      if (content && content.length <= 4000) {
+        fileContents[path] = content;
+      }
+    }
+
+    // 4️⃣ Tech stack
+    const techStack = `- Languages: ${analysis.languages.join(", ") || "None"}
+- Frameworks: ${analysis.frameworks.join(", ") || "None"}`;
+
+    // 5️⃣ Badges
+    const badges = generateBadges(
+      analysis.languages,
+      analysis.frameworks
+    );
+
+    // 6️⃣ AI content
+    const aiText = await groqRewrite(
+      "You output only valid GitHub-flavored Markdown.",
+      buildGroqPrompt(owner, repo, analysis, fileContents)
+    );
+
+    const description =
+      aiText.match(/## 📄 Description([\s\S]*?)##/i)?.[1]?.trim() ||
+      "Description unavailable.";
+
+    const features =
+      aiText.match(/## ✨ Features([\s\S]*)/i)?.[1]?.trim() ||
+      "- No features listed.";
+
+    // 8️⃣ Final README
+    const readme = buildReadmeTemplate({
+      title: `${owner}/${repo}`,
+      badges,
+      techStack,
+      description,
+      features,
+      installation,
+      usage,
     });
+
+    return NextResponse.json({ analysis, readme });
   } catch (err) {
     console.error("Generate README error:", err);
     return NextResponse.json(

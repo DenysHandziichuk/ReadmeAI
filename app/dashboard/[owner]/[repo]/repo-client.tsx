@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Toaster, toast } from "sonner";
 import ReactMarkdown from "react-markdown";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function RepoClient({
   owner,
@@ -11,6 +13,8 @@ export default function RepoClient({
   owner: string;
   repo: string;
 }) {
+  const router = useRouter();
+
   const [readme, setReadme] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -36,6 +40,8 @@ export default function RepoClient({
         body: JSON.stringify({ owner, repo }),
       });
 
+      if (!res.ok) throw new Error("Request failed");
+
       const data = await res.json();
       setReadme(data.readme);
       toast.success("README generated");
@@ -54,13 +60,26 @@ export default function RepoClient({
         {owner}/{repo}
       </h1>
 
-      <button
-        onClick={generateReadme}
-        disabled={loading}
-        className="px-4 py-2 bg-black text-white rounded disabled:opacity-50"
-      >
-        {loading ? "Generating..." : "Generate README"}
-      </button>
+      <div className="flex gap-4">
+        <button
+          onClick={generateReadme}
+          disabled={loading}
+          className="px-4 py-2 bg-black text-white rounded disabled:opacity-50"
+        >
+          {loading ? "Generating..." : "Generate README"}
+        </button>
+
+        
+
+<Link
+  href="/dashboard"
+  className="px-4 py-2 bg-black text-white rounded inline-block"
+>
+  ← Choose another repository
+</Link>
+
+
+      </div>
 
       {readme && (
         <div className="mt-6 space-y-4">
@@ -68,12 +87,12 @@ export default function RepoClient({
 
           <button
             onClick={copyToClipboard}
-            className="px-4 py-2 bg-black text-white rounded disabled:opacity-50"
+            className="px-4 py-2 bg-black text-white rounded"
           >
             Copy to clipboard
           </button>
 
-          <div className="prose max-w-none border rounded p-6 bg-black">
+          <div className="prose max-w-none border rounded p-6 bg-black text-white">
             <ReactMarkdown>{readme}</ReactMarkdown>
           </div>
         </div>

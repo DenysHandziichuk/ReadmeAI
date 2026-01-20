@@ -48,7 +48,6 @@ export default function RepoClient({
 
   return (
     <main className="p-8 space-y-6">
-      {/* Mount ONCE here or preferably in layout.tsx */}
       <Toaster position="bottom-right" richColors />
 
       <h1 className="text-2xl font-bold">

@@ -50,7 +50,6 @@ export async function POST(req: Request) {
     const readme = generateReadme(owner, repo, analysis);
 
     return NextResponse.json({
-      analysis,
       readme,
     });
   } catch (err) {

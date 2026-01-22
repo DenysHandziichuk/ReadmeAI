@@ -1,89 +1,119 @@
-type Badge = {
-  label: string;
-  logo: string;
-  color: string;
+import React from "react";
+
+const BADGES: Record<string, string> = {
+
+  // languages
+  JavaScript:
+    "![JavaScript](https://img.shields.io/badge/javascript-%23F7DF1E.svg?style=for-the-badge&logo=javascript&logoColor=black)",
+  TypeScript:
+    "![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)",
+  Python:
+    "![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)",
+  Html:
+    "![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)",
+  Css:
+    "![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)",
+  C:
+    "![C](https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white)",
+  "C++":
+    "![C++](https://img.shields.io/badge/c++-%2300599C.svg?style=for-the-badge&logo=c%2B%2B&logoColor=white)",
+  Go:
+    "![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)",
+  Rust:
+    "![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)",
+  Java:
+    "![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)",
+  Php:
+    "![PHP](https://img.shields.io/badge/php-%23777BB4.svg?style=for-the-badge&logo=php&logoColor=white)",
+  "C#":
+    "![C#](https://img.shields.io/badge/c%23-%23239120.svg?style=for-the-badge&logo=csharp&logoColor=white)",
+
+  // frontend frameworks
+
+  React:
+    "![React](https://img.shields.io/badge/react-%2361DAFB.svg?style=for-the-badge&logo=react&logoColor=black)",
+  NextJS:
+    "![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)",
+  Vue:
+    "![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D)",
+  Angular:
+    "![Angular](https://img.shields.io/badge/angular-%23DD0031.svg?style=for-the-badge&logo=angular&logoColor=white)",
+
+  // Styling
+  TailwindCSS:
+    "![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)",
+  Bootstrap:
+    "![Bootstrap](https://img.shields.io/badge/bootstrap-%238511FA.svg?style=for-the-badge&logo=bootstrap&logoColor=white)",
+  
+  // backend /runtimes
+  Node:
+    "![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)",
+  Deno:
+    "![Deno JS](https://img.shields.io/badge/deno%20js-000000?style=for-the-badge&logo=deno&logoColor=white)",
+  Bun:
+    "![Bun](https://img.shields.io/badge/Bun-%23000000.svg?style=for-the-badge&logo=bun&logoColor=white)",
+
+  // backend frameworks
+  Express:
+    "![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)",
+  FastAPI:
+    "![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)",
+  Django:
+    "![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white)",
+  Flask:
+    "![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)",
+  NestJS:
+    "![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white)",
+
+  // package managers
+
+  npm:
+    "![NPM](https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white)",
+  pnpm:
+    "![PNPM](https://img.shields.io/badge/pnpm-%234a4a4a.svg?style=for-the-badge&logo=pnpm&logoColor=f69220)",
+  yarn:
+    "![Yarn](https://img.shields.io/badge/yarn-%232C8EBB.svg?style=for-the-badge&logo=yarn&logoColor=white)",
+  Vite:
+    "![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)",
+  Webpack:
+    "![Webpack](https://img.shields.io/badge/webpack-%238DD6F9.svg?style=for-the-badge&logo=webpack&logoColor=black)",
+
+  // embedded
+  Arduino:
+    "![Arduino](https://img.shields.io/badge/-Arduino-00979D?style=for-the-badge&logo=Arduino&logoColor=white)",
+  PlatformIO:
+    "![PlatformIO](https://img.shields.io/badge/PlatformIO-%23222.svg?style=for-the-badge&logo=platformio&logoColor=%23f5822a)",
+
+  // databases
+  PostgreSQL:
+    "![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)",
+  MySQL:      
+    "![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)",
+  MongoDB:   
+    "![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)",
+  SQLite:     
+    "![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white)",
+  Redis:  
+    "![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)",
+
+  // testing
+
+  Jest:   
+    "![Jest](https://img.shields.io/badge/-jest-%23C21325?style=for-the-badge&logo=jest&logoColor=white)",
+  Vitest:  
+    "![Vitest](https://img.shields.io/badge/-Vitest-252529?style=for-the-badge&logo=vitest&logoColor=FCC72B)",
+  Playwright:  
+    "![Playwright](https://img.shields.io/badge/-playwright-%232EAD33?style=for-the-badge&logo=playwright&logoColor=white)",
+  ESLint:     
+    "![ESLint](https://img.shields.io/badge/ESLint-4B3263?style=for-the-badge&logo=eslint&logoColor=white)",
+  Prettier:
+    "![Prettier](https://img.shields.io/badge/prettier-%23F7B93E.svg?style=for-the-badge&logo=prettier&logoColor=black)",
+
 };
 
-const BADGES: Record<string, Badge> = {
-  JavaScript:  { label: "JavaScript",  logo: "javascript",  color: "F7DF1E" },
-  TypeScript:  { label: "TypeScript",  logo: "typescript",  color: "3178C6" },
-  Python:      { label: "Python",      logo: "python",      color: "3776AB" },
-  HTML:        { label: "HTML",        logo: "html5",       color: "E34F26" },
-  CSS:         { label: "CSS",         logo: "css3",        color: "1572B6" },
-  C:           { label: "C",           logo: "c",           color: "A8B9CC" },
-  "C++":       { label: "C++",         logo: "cplusplus",   color: "00599C" },
-  Go:          { label: "Go",          logo: "go",          color: "00ADD8" },
-  Rust:        { label: "Rust",        logo: "rust",        color: "000000" },
-  Java:        { label: "Java",        logo: "openjdk",     color: "ED8B00" },
-  PHP:         { label: "PHP",         logo: "php",         color: "777BB4" },
-  Shell:       { label: "Shell",       logo: "gnubash",     color: "4EAA25" },
-
-  // Frontend Frameworks
-  React:       { label: "React",       logo: "react",       color: "61DAFB" },
-  NextJS:      { label: "Next.js",     logo: "nextdotjs",   color: "000000" },
-  Vue:         { label: "Vue.js",      logo: "vuedotjs",    color: "4FC08D" },
-  Svelte:      { label: "Svelte",      logo: "svelte",      color: "FF3E00" },
-  Angular:     { label: "Angular",     logo: "angular",     color: "DD0031" },
-
-  // Styling / UI
-  TailwindCSS: { label: "Tailwind CSS", logo: "tailwindcss", color: "06B6D4" },
-  Bootstrap:   { label: "Bootstrap",   logo: "bootstrap",   color: "7952B3" },
-  Sass:        { label: "Sass",        logo: "sass",        color: "CC6699" },
-
-  // Backend / Runtimes
-  Node:        { label: "Node.js",     logo: "nodedotjs",   color: "339933" },
-  Deno:        { label: "Deno",        logo: "deno",        color: "000000" },
-  Bun:         { label: "Bun",         logo: "bun",         color: "000000" },
-
-  // Backend Frameworks
-  Express:     { label: "Express",     logo: "express",     color: "000000" },
-  FastAPI:     { label: "FastAPI",     logo: "fastapi",     color: "009688" },
-  Django:      { label: "Django",      logo: "django",      color: "092E20" },
-  Flask:       { label: "Flask",       logo: "flask",       color: "000000" },
-  NestJS:      { label: "NestJS",      logo: "nestjs",      color: "E0234E" },
-
-  // Package Managers / Build Tools
-  npm:         { label: "npm",         logo: "npm",         color: "CB3837" },
-  pnpm:        { label: "pnpm",        logo: "pnpm",        color: "F69220" },
-  yarn:        { label: "Yarn",        logo: "yarn",        color: "2C8EBB" },
-  Vite:        { label: "Vite",        logo: "vite",        color: "646CFF" },
-  Webpack:     { label: "Webpack",     logo: "webpack",     color: "8DD6F9" },
-
-  // Embedded / Systems
-  Arduino:     { label: "Arduino",     logo: "arduino",     color: "00979D" },
-  PlatformIO:  { label: "PlatformIO",  logo: "platformio",  color: "F5822A" },
-  ESP32:       { label: "ESP32",       logo: "espressif",   color: "E7352C" },
-
-  // Databases (optional but nice)
-  PostgreSQL:  { label: "PostgreSQL",  logo: "postgresql",  color: "4169E1" },
-  MySQL:       { label: "MySQL",       logo: "mysql",       color: "4479A1" },
-  MongoDB:     { label: "MongoDB",     logo: "mongodb",     color: "47A248" },
-  SQLite:      { label: "SQLite",      logo: "sqlite",      color: "003B57" },
-  Redis:       { label: "Redis",       logo: "redis",       color: "DC382D" },
-
-  // Testing / Tools (optional)
-  Jest:        { label: "Jest",        logo: "jest",        color: "C21325" },
-  Vitest:      { label: "Vitest",      logo: "vitest",      color: "6E9F18" },
-  Playwright:  { label: "Playwright",  logo: "playwright",  color: "2EAD33" },
-  ESLint:      { label: "ESLint",      logo: "eslint",      color: "4B32C3" },
-  Prettier:    { label: "Prettier",    logo: "prettier",    color: "F7B93E" },
-};
-
-export function generateBadges(
-  languages: string[],
-  frameworks: string[] = [],
-  tools: string[] = []
-): string {
-  const techList = [...languages, ...frameworks, ...tools];
-
-  return techList
+export function generateBadges(tech: string[]) {
+  return tech
     .map(t => BADGES[t])
     .filter(Boolean)
-    .map(
-      ({ label, logo, color }) =>
-        `![${label}](https://img.shields.io/badge/${encodeURIComponent(
-          label
-        )}-${color}?logo=${logo}&logoColor=white)`
-    )
     .join(" ");
 }

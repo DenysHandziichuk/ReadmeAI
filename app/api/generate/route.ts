@@ -57,7 +57,7 @@ export async function POST(req: Request) {
 
     // 6) Replace placeholders (facts owned by code)
     const repoUrl = `https://github.com/${owner}/${repo}`;
-    
+    // make the badges appear after title and short paragraph, fix
     const finalReadme = `
 ${badges}
 

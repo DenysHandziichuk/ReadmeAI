@@ -55,19 +55,33 @@ export async function POST(req: Request) {
       buildModeBPrompt(owner, repo, projectType, fileContents)
     );
 
+    function injectBadgesAfterIntro(readme: string, badges: string) {
+  const splitIndex = readme.indexOf("\n\n## ");
+
+  if (splitIndex === -1) {
+    // Fallback: append badges at top section boundary
+    return `${readme}\n\n${badges}`;
+  }
+
+  const intro = readme.slice(0, splitIndex);
+  const rest = readme.slice(splitIndex);
+
+  return `${intro}\n\n${badges}\n\n${rest}`;
+}
+
+
+
     // 6) Replace placeholders (facts owned by code)
     const repoUrl = `https://github.com/${owner}/${repo}`;
-    // make the badges appear after title and short paragraph, fix
-    const finalReadme = `
-${badges}
 
-${aiReadmeBody}
-`
-      .replaceAll("{{REPO_URL}}", repoUrl)
-      .replaceAll("{{REPO_NAME}}", repo)
-      .replaceAll("{{OWNER}}", owner)
-      .replaceAll("{{PORT}}", "3000")
-      .trim();
+let finalReadme = injectBadgesAfterIntro(aiReadmeBody, badges);
+
+finalReadme = finalReadme
+  .replaceAll("{{REPO_URL}}", repoUrl)
+  .replaceAll("{{REPO_NAME}}", repo)
+  .replaceAll("{{OWNER}}", owner)
+  .replaceAll("{{PORT}}", "3000")
+  .trim();
 
     return NextResponse.json({ readme: finalReadme });
   } catch (err) {

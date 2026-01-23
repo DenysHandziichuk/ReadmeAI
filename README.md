@@ -1,16 +1,17 @@
 # 📄👋 Readme-Generator
 Readme-Generator is a powerful tool for generating high-quality README files. It provides a simple and efficient way to create polished, modern READMEs. With Readme-Generator, you can focus on writing great content without worrying about formatting.
 
-![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
-
-
-
-## 📊 Key Features
+ 
+## ✨ Key Features
 * 🚀 Automatically generates GitHub-flavored Markdown
 * 📝 Supports custom formatting and styling
 * 📈 Helps you create high-quality, product-style READMEs
 
-## 📈 Simple Workflow
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+
+
+
+## 🧭 Simple Workflow
 1. Install the required dependencies
 2. Run the generator with your desired settings
 3. Review and customize your generated README
@@ -27,11 +28,25 @@ The purpose of Readme-Generator is to simplify the process of creating great REA
  
 
 ## 🧩 Installation & Usage
-To get started with Readme-Generator, navigate to the project directory and run `npm install`. Then, start the development server with `npm run dev`. Open your browser and navigate to [http://localhost:3000](http://localhost:3000) to see the result. You can customize the generator by modifying the settings and configuration files.
+To get started with Readme-Generator, follow these steps:
+```bash
+git clone https://github.com/DenysHandziichuk/Readme-Generator
+cd Readme-Generator
+```
+Then, install the required dependencies:
+```bash
+npm install
+```
+Finally, start the development server:
+```bash
+npm run dev
+```
+You can access the application at:
+http://localhost:3000
 
  
 ---
  
 
 ## 🛠️ Tech Stack
-Readme-Generator is built using Node.js and utilizes the Next.js framework. It also leverages the power of React, React DOM, and React Markdown to provide a robust and efficient generation process. With a strong focus on code quality and maintainability, Readme-Generator is a reliable tool for generating high-quality README files.
+Readme-Generator is built using a modern tech stack, including Next.js, React, and TypeScript, allowing for efficient and scalable development.

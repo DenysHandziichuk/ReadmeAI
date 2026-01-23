@@ -2,13 +2,17 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
-  const { owner, repo } = await req.json();
   const cookieStore = await cookies();
   const token = cookieStore.get("gh_token")?.value;
 
-
   if (!token) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { owner, repo } = await req.json();
+
+  if (!owner || !repo) {
+    return NextResponse.json({ error: "Missing repo info" }, { status: 400 });
   }
 
   const res = await fetch(
@@ -22,11 +26,15 @@ export async function POST(req: Request) {
   );
 
   if (!res.ok) {
-    return NextResponse.json({ error: "Failed to fetch branches" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch branches" },
+      { status: 500 }
+    );
   }
 
   const data = await res.json();
 
-  const branches = data.map((b: any) => b.name);
-  return NextResponse.json({ branches });
+  return NextResponse.json({
+    branches: data.map((b: any) => b.name),
+  });
 }

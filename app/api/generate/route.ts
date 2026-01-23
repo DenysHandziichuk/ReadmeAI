@@ -11,55 +11,11 @@ import { groqRewrite } from "@/lib/groq/client";
 import { buildModeBPrompt } from "@/lib/readme/modeBPrompt";
 import { generateBadges } from "@/lib/readme/generateBadges";
 
-export async function POST(req: Request) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("gh_token")?.value;
-  if (!token) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-  }
-
-  const { owner, repo } = await req.json();
-  if (!owner || !repo) {
-    return NextResponse.json({ error: "Missing owner or repo" }, { status: 400 });
-  }
-
-  try {
-    // 1) Fetch repo files
-    const files = await fetchRepoFiles(owner, repo, token);
-
-    // 2) Light analysis (context only)
-    const analysis = analyzeRepo(files);
-    const projectType = detectProjectType(
-      files,
-      analysis.languages,
-      analysis.frameworks
-    );
-
-    // 3) Read important file contents
-    const importantFiles = selectImportantFiles(files);
-    const fileContents: Record<string, string> = {};
-    for (const path of importantFiles) {
-      const content = await fetchRepoFileContent(owner, repo, path, token);
-      if (content && content.length <= 4000) fileContents[path] = content;
-    }
-
-    // 4) Deterministic badges (top of README)
-    const badges = generateBadges([
-      ...analysis.languages,
-      ...analysis.frameworks,
-    ]);
-
-    // 5) AI writes the ENTIRE README BODY (Mode B)
-    const aiReadmeBody = await groqRewrite(
-      "You output only valid GitHub-flavored Markdown.",
-      buildModeBPrompt(owner, repo, projectType, fileContents)
-    );
-
-    function injectBadgesAfterIntro(readme: string, badges: string) {
+/* ✅ Badge injection helper (Mode B rule) */
+function injectBadgesAfterIntro(readme: string, badges: string) {
   const splitIndex = readme.indexOf("\n\n## ");
 
   if (splitIndex === -1) {
-    // Fallback: append badges at top section boundary
     return `${readme}\n\n${badges}`;
   }
 
@@ -69,23 +25,92 @@ export async function POST(req: Request) {
   return `${intro}\n\n${badges}\n\n${rest}`;
 }
 
+export async function POST(req: Request) {
+  console.log("🔥 GENERATE MODE B HIT");
 
+  const cookieStore = await cookies();
+  const token = cookieStore.get("gh_token")?.value;
 
-    // 6) Replace placeholders (facts owned by code)
+  if (!token) {
+    return NextResponse.json(
+      { error: "Not authenticated" },
+      { status: 401 }
+    );
+  }
+
+  const { owner, repo } = await req.json();
+
+  if (!owner || !repo) {
+    return NextResponse.json(
+      { error: "Missing owner or repo" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    /* 1️⃣ Fetch repo file list */
+    const files = await fetchRepoFiles(owner, repo, token);
+
+    /* 2️⃣ Repo analysis (facts only) */
+    const analysis = analyzeRepo(files);
+
+    const projectType = detectProjectType(
+      files,
+      analysis.languages,
+      analysis.frameworks
+    );
+
+    /* 3️⃣ Load important file contents */
+    const importantFiles = selectImportantFiles(files);
+
+    const fileContents: Record<string, string> = {};
+    for (const path of importantFiles) {
+      const content = await fetchRepoFileContent(owner, repo, path, token);
+
+      if (content && content.length <= 4000) {
+        fileContents[path] = content;
+      }
+    }
+
+    /* 4️⃣ Deterministic badges */
+    const tech = [...new Set([...analysis.languages, ...analysis.frameworks])];
+
+    const badges = generateBadges(tech);
+
+    /* 5️⃣ AI generates FULL Mode B README body */
+    const aiReadmeBody = await groqRewrite(
+      "You output only valid GitHub-flavored Markdown.",
+      buildModeBPrompt(owner, repo, projectType, fileContents)
+    );
+
+    /* 6️⃣ Inject badges AFTER title + short intro */
+    let finalReadme = injectBadgesAfterIntro(aiReadmeBody, badges);
+
+    /* 7️⃣ Replace placeholders */
     const repoUrl = `https://github.com/${owner}/${repo}`;
 
-let finalReadme = injectBadgesAfterIntro(aiReadmeBody, badges);
-
+ // Replace placeholders first
 finalReadme = finalReadme
   .replaceAll("{{REPO_URL}}", repoUrl)
   .replaceAll("{{REPO_NAME}}", repo)
-  .replaceAll("{{OWNER}}", owner)
   .replaceAll("{{PORT}}", "3000")
-  .trim();
+  .replaceAll("{PORT}", "3000");
 
-    return NextResponse.json({ readme: finalReadme });
+
+
+finalReadme = finalReadme.replaceAll("{{REPO_NAME}}", repo);
+
+
+
+
+    /* ✅ Return final README */
+    return NextResponse.json({
+      analysis,
+      readme: finalReadme,
+    });
   } catch (err) {
     console.error("Generate README error:", err);
+
     return NextResponse.json(
       { error: "Failed to generate README" },
       { status: 500 }

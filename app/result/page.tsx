@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import ResultActions from "@/components/ResultActions";
 import { getReadme } from "@/lib/store/readmeStore";
+import remarkGfm from "remark-gfm";
 
 type Data = {
   owner: string;
@@ -45,7 +46,7 @@ export default function ResultPage() {
       </h1>
 
       <div className="prose max-w-none border border-zinc-800 rounded-lg p-6 bg-black text-white">
-        <ReactMarkdown>{content}</ReactMarkdown>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
       </div>
 
       <ResultActions owner={owner} repo={repo} readme={content} />

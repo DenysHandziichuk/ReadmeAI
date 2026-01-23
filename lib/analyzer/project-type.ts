@@ -20,6 +20,14 @@ export function detectProjectType(
   ) {
     return "static-web";
   }
+  if (languages.includes("Python")) return "python";
+
+
+
+  // Frontend
+  if (frameworks.includes("React") || frameworks.includes("Vite"))
+    return "frontend";
+
 
 
   if (files.includes("package.json")) {

@@ -27,8 +27,8 @@ export default function LoadingPage() {
       const data = await res.json();
 
       setReadme({
-  owner,
-  repo,
+  owner: owner as string,
+  repo: repo as string,
   content: data.readme,
 });
 

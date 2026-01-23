@@ -2,21 +2,22 @@
 
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { setReadme } from "@/lib/store/readmeStore";
 
 export default function LoadingPage() {
   const router = useRouter();
   const params = useSearchParams();
 
-  const owner = params.get("owner");
-  const repo = params.get("repo");
-
   useEffect(() => {
-    async function generate() {
-      if (!owner || !repo) {
-        router.replace("/dashboard");
-        return;
-      }
+    const owner = params.get("owner");
+    const repo = params.get("repo");
 
+    if (!owner || !repo) {
+      router.replace("/dashboard");
+      return;
+    }
+
+    async function generate() {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -25,19 +26,22 @@ export default function LoadingPage() {
 
       const data = await res.json();
 
-      sessionStorage.setItem(
-        "generatedReadme",
-        data.readme
-      );
+      setReadme({
+  owner,
+  repo,
+  content: data.readme,
+});
 
-      router.replace(
-        `/result?owner=${owner}&repo=${repo}`
-      );
+console.log("README STORED");
+
+
+      router.replace("/result");
     }
 
     generate();
-  }, [owner, repo, router]);
+  }, [params, router]);
 
+  // ⬇️ UI SKELETON — UNCHANGED ⬇️
   return (
     <main className="min-h-screen bg-black text-white flex items-center justify-center">
       <div className="max-w-md w-full px-6 space-y-6">

@@ -9,11 +9,19 @@ export async function fetchRepoFileContent(
     {
       headers: {
         Authorization: `Bearer ${token}`,
-        Accept: "application/vnd.github.v3.raw",
+        Accept: "application/vnd.github+json",
       },
     }
   );
 
   if (!res.ok) return null;
-  return await res.text();
+
+  const data = await res.json();
+
+  // GitHub returns base64 file content
+  if (!data.content) return null;
+
+  const decoded = Buffer.from(data.content, "base64").toString("utf-8");
+
+  return decoded;
 }

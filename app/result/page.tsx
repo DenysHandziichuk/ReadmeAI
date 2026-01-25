@@ -1,55 +1,70 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
-import ResultActions from "@/components/ResultActions";
-import { getReadme } from "@/lib/store/readmeStore";
-import remarkGfm from "remark-gfm";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-type Data = {
-  owner: string;
-  repo: string;
-  content: string;
-};
+import { useStoredReadme, clearReadme } from "@/lib/store/readmeStore";
+import ResultActions from "@/components/ResultActions";
 
 export default function ResultPage() {
   const router = useRouter();
-  const [data, setData] = useState<Data | null>(null);
-  const [checked, setChecked] = useState(false);
 
+  // ✅ Load README from sessionStorage
+  const stored = useStoredReadme();
+
+  // ✅ Redirect if nothing exists
   useEffect(() => {
-    const stored = getReadme();
+    if (stored === null) return; // still loading
 
-    if (stored) {
-      setData(stored);
-    }
-
-    setChecked(true);
-  }, []);
-
-  useEffect(() => {
-    if (checked && !data) {
+    if (!stored?.content) {
       router.replace("/dashboard");
     }
-  }, [checked, data, router]);
+  }, [stored, router]);
 
-  if (!checked) return null;
-  if (!data) return null;
+  // ⏳ Loading state while hook reads storage
+  if (stored === null) {
+    return (
+      <main className="min-h-screen bg-black text-white flex items-center justify-center">
+        <p className="text-zinc-400">Loading README…</p>
+      </main>
+    );
+  }
 
-  const { owner, repo, content } = data;
+  // ❌ Safety fallback
+  if (!stored.content) return null;
 
   return (
-    <main className="p-10 max-w-4xl mx-auto space-y-8">
-      <h1 className="text-3xl font-bold">
-        {owner}/{repo}
-      </h1>
-
-      <div className="prose max-w-none border border-zinc-800 rounded-lg p-6 bg-black text-white">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+    <main className="min-h-screen bg-black text-white px-8 py-10 space-y-8">
+      {/* Title */}
+      <div>
+        <h1 className="text-3xl font-bold">README Generated</h1>
+        <p className="text-zinc-400 mt-2">
+          {stored.owner}/{stored.repo}
+        </p>
       </div>
 
-      <ResultActions owner={owner} repo={repo} readme={content} />
+      {/* Actions */}
+      <ResultActions
+        owner={stored.owner}
+        repo={stored.repo}
+        readme={stored.content}
+      />
+
+      {/* Preview */}
+      <div className="prose prose-invert max-w-none border border-zinc-800 rounded-xl p-6 bg-zinc-950">
+        <ReactMarkdown>{stored.content}</ReactMarkdown>
+      </div>
+
+      {/* Back */}
+      <Link
+        href="/dashboard"
+        onClick={() => clearReadme()}
+        className="inline-block text-zinc-400 hover:text-white"
+      >
+        ← Back to repositories
+      </Link>
     </main>
   );
 }

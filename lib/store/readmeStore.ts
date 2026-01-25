@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 export type StoredReadme = {
   owner: string;
   repo: string;
@@ -27,4 +29,15 @@ export function getReadme(): StoredReadme | null {
 export function clearReadme() {
   if (typeof window === "undefined") return;
   sessionStorage.removeItem(KEY);
+}
+
+export function useStoredReadme() {
+  const [ stored, setStored] = useState<StoredReadme | null>(null);
+
+  useEffect(() => {
+    const data = getReadme();
+    setStored(data);
+  }, []);
+
+  return stored
 }

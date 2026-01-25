@@ -84,17 +84,21 @@ export async function POST(req: Request) {
     );
 
     /* 6️⃣ Inject badges AFTER title + short intro */
-    let finalReadme = injectBadgesAfterIntro(aiReadmeBody, badges);
+    let finalReadme = aiReadmeBody.replace("{{BADGES}}", badges);
+
 
     /* 7️⃣ Replace placeholders */
     const repoUrl = `https://github.com/${owner}/${repo}`;
 
  // Replace placeholders first
 finalReadme = finalReadme
+  .replace("{{BADGES}}", badges)
   .replaceAll("{{REPO_URL}}", repoUrl)
   .replaceAll("{{REPO_NAME}}", repo)
+  .replaceAll("{{OWNER}}", owner)
   .replaceAll("{{PORT}}", "3000")
-  .replaceAll("{PORT}", "3000");
+  .trim();
+
 
 
 

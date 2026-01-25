@@ -20,7 +20,7 @@ export default function RepoClient({
   const [branches, setBranches] = useState<string[]>([]);
   const [selectedBranch, setSelectedBranch] = useState<string>("");
 
-  /* ✅ Load branches once */
+ 
   useEffect(() => {
     async function loadBranches() {
       try {
@@ -45,7 +45,7 @@ export default function RepoClient({
     loadBranches();
   }, [owner, repo]);
 
-  /* ✅ Generate README */
+ 
   async function generateReadme() {
     setLoading(true);
 
@@ -70,37 +70,25 @@ export default function RepoClient({
     }
   }
 
-  /* ✅ Copy */
-  async function copyToClipboard() {
-    if (!readme) return;
-
-    try {
-      await navigator.clipboard.writeText(readme);
-      toast.success("README copied 📋");
-    } catch (err) {
-      console.error(err);
-      toast.error("Copy failed");
-    }
-  }
+ 
+  
 
   return (
     <main className="min-h-screen bg-black text-white px-8 py-12">
       <Toaster position="bottom-right" richColors />
 
       <div className="max-w-5xl mx-auto space-y-8">
-        {/* Header */}
         <div className="space-y-2">
           <h1 className="text-3xl font-bold">
             {owner}/{repo}
           </h1>
 
           <p className="text-zinc-400">
-            Generate a Mode B product-style README with badges, clean structure,
+            Generate ap roduct-style README with badges, clean structure,
             and GitHub-ready formatting.
           </p>
         </div>
 
-        {/* Top Actions */}
         <div className="flex flex-wrap gap-4">
           <button
             onClick={generateReadme}
@@ -118,45 +106,22 @@ export default function RepoClient({
           </Link>
         </div>
 
-        {/* README Output */}
         {readme && (
           <div className="space-y-6 pt-6">
-            {/* Controls */}
             <div className="flex flex-wrap gap-3 items-center">
-              {/* Branch Selector */}
-              <select
-                value={selectedBranch}
-                disabled={branches.length === 0}
-                onChange={(e) => setSelectedBranch(e.target.value)}
-                className="bg-zinc-900 border border-zinc-700 px-3 py-2 rounded-lg text-white disabled:opacity-50"
-              >
-                {branches.map((b) => (
-                  <option key={b} value={b}>
-                    {b}
-                  </option>
-                ))}
-              </select>
-
-              {/* ✅ Commit / PR Split Button */}
-              <ResultActions
-                owner={owner}
-                repo={repo}
-                readme={readme}
-              />
-
-              {/* Copy */}
-              <button
-                onClick={copyToClipboard}
-                className="px-4 py-2 border border-zinc-700 rounded-lg hover:bg-zinc-900 transition"
-              >
-                Copy Markdown
-              </button>
+              
             </div>
 
-            {/* Preview */}
-            <div className="prose prose-invert max-w-none border border-zinc-800 rounded-xl p-6 bg-zinc-950">
-              <ReactMarkdown>{readme}</ReactMarkdown>
-            </div>
+            {readme && (
+  <div className="space-y-6 pt-6">
+    <ResultActions owner={owner} repo={repo} readme={readme} />
+    
+
+    <div className="prose prose-invert max-w-none border border-zinc-800 rounded-xl p-6 bg-zinc-950">
+      <ReactMarkdown>{readme}</ReactMarkdown>
+    </div>
+  </div>
+)}
           </div>
         )}
       </div>

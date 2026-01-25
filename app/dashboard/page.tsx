@@ -1,58 +1,75 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Link from "next/link";
+import { cookies } from "next/headers";
 
-type Repo = {
-  name: string;
-  owner: string;
-  private: boolean;
-  description: string | null;
-};
+export default async function DashboardPage() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("gh_token")?.value;
 
-export default function DashboardPage() {
-  const [repos, setRepos] = useState<Repo[]>([]);
-  const [loading, setLoading] = useState(true);
+  if (!token) {
+    return (
+      <main className="min-h-screen bg-black text-white flex items-center justify-center">
+        <p className="text-zinc-400">Not authenticated.</p>
+      </main>
+    );
+  }
 
-  useEffect(() => {
-    async function loadRepos() {
-      const res = await fetch("/api/github/repos");
-      if (!res.ok) return;
+  const res = await fetch("http://localhost:3000/api/github/repos", {
+    headers: {
+      Cookie: `gh_token=${token}`,
+    },
+    cache: "no-store",
+  });
 
-      const data = await res.json();
-      setRepos(data.repos);
-      setLoading(false);
-    }
-
-    loadRepos();
-  }, []);
+  const data = await res.json();
+  const repos = data.repos || [];
 
   return (
-    <main className="min-h-screen bg-black text-white p-8">
-      <h1 className="text-2xl font-bold mb-6">Select a repository</h1>
+    <main className="min-h-screen bg-black text-white px-6 py-14">
+      <div className="max-w-4xl mx-auto space-y-10">
+        {/* Header */}
+        <div className="space-y-2">
+          <h1 className="text-4xl font-bold tracking-tight">
+            Choose a Repository
+          </h1>
 
-      {loading && (
-        <p className="text-zinc-400">Loading repositories…</p>
-      )}
+          <p className="text-zinc-400 text-lg">
+            Select a repo and generate a Mode B product-style README.
+          </p>
+        </div>
 
-      <div className="space-y-3">
-        {repos.map(repo => (
-  <Link
-    key={`${repo.owner}/${repo.name}`}
-    href={`/generate?owner=${repo.owner}&repo=${repo.name}`}
-    className="block p-4 rounded-lg border border-zinc-800 hover:bg-zinc-900 transition"
-  >
-    <div className="font-mono">
-      {repo.owner}/{repo.name}
-    </div>
+        {/* Repo List */}
+        <div className="grid gap-4">
+          {repos.map((repo: any) => (
+            <Link
+              key={`${repo.owner.login}/${repo.name}`}
+              href={`/dashboard/${repo.owner}/${repo.name}`}
+              className="group block border border-zinc-800 rounded-xl p-5 hover:bg-zinc-900 transition"
+            >
+              <div className="flex justify-between items-center">
+                <div>
+                  <h2 className="text-lg font-semibold group-hover:text-white">
+                    {repo.name}
+                  </h2>
 
-    {repo.description && (
-      <p className="text-sm text-zinc-400 mt-1">
-        {repo.description}
-      </p>
-    )}
-  </Link>
-))}
+                  <p className="text-sm text-zinc-500">
+                    {repo.private ? "🔒 Private" : "🌍 Public"} • ⭐{" "}
+                    {repo.stargazers_count}
+                  </p>
+                </div>
+
+                <span className="text-zinc-600 group-hover:text-white transition">
+                  →
+                </span>
+              </div>
+
+              {repo.description && (
+                <p className="mt-3 text-zinc-400 text-sm line-clamp-2">
+                  {repo.description}
+                </p>
+              )}
+            </Link>
+          ))}
+        </div>
       </div>
     </main>
   );

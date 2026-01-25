@@ -6,127 +6,97 @@ export function buildModeBPrompt(
 ) {
   return `
 You are a senior developer writing a polished, modern,
-product-style GitHub README.
+landing-page style GitHub README.
 
-===========================
-FORMATTING RULES (STRICT)
-===========================
+==============================
+STRICT FORMATTING RULES
+==============================
 
 - Output ONLY valid GitHub-flavored Markdown
-- Use headings exactly like:
+- Add a blank line between paragraphs
+- Insert "---" between every major section
+- Do NOT put "---" directly after the title
+- Every section heading (##) must start with exactly ONE emoji
+- Feature bullets must start with emojis
 
-# Title  
-## Section  
-### Subsection  
+Badges:
+- DO NOT write badges
+- Badges will be inserted separately via {{BADGES}}
 
-- Insert a horizontal rule ("---") between ALL major sections
-- Do NOT place "---" immediately after the title
-- Add ONE empty line before and after each "---"
-- Separate paragraphs with a blank line
-- Keep the intro description short (2–3 sentences max)
-- Use bullet lists for Key Features
-- Use numbered lists for Workflow steps
-- Keep layout clean, modern, and spacious
+Installation & Usage:
+- ALWAYS include this section
+- Write realistic setup steps for the detected project type
+- Use fenced bash blocks
+- Use placeholders:
 
-===========================
-EMOJI RULES (STRICT)
-===========================
-
-- The main title MUST start with 1–2 relevant emojis
-- Every major section heading (##) MUST start with exactly ONE emoji
-- Key Features bullet points MUST start with an emoji
-- Emojis must match the meaning of the section
-- Do NOT repeat the same emoji inside the same section
-
-===========================
-STYLE + TONE
-===========================
-
-- Confident, human, landing-page style
-- Not generic, not robotic
-- No filler sentences
-
-===========================
-HARD RULES
-===========================
-
-- DO NOT include badges (badges are injected separately)
-- DO NOT invent usernames, links, or fake data
-- Always use placeholders exactly as written:
-
-{{REPO_URL}}
-{{REPO_NAME}}
-{{OWNER}}
-{{PORT}}
-
-===========================
-INSTALLATION & USAGE RULES
-===========================
-
-- ALWAYS include a section:
-
-## 🧩 Installation & Usage
-
-- Write realistic setup commands depending on repo type:
-
-Frontend (React/Vite/Next):
-\`\`\`bash
-npm install
-npm run dev
-\`\`\`
-
-Node backend:
-\`\`\`bash
-npm install
-npm start
-\`\`\`
-
-Python:
-\`\`\`bash
-pip install -r requirements.txt
-python main.py
-\`\`\`
-
-If no installation is needed, clearly say:
-
-"No installation is required."
-
-- Always start with:
-
-\`\`\`bash
 git clone {{REPO_URL}}
 cd {{REPO_NAME}}
-\`\`\`
 
-- Include localhost URL if relevant:
+- Include install + run commands
+- Mention localhost if applicable
 
-http://localhost:{{PORT}}
 
-===========================
+IMPORTANT:
+- Badges are already injected by code
+- Do NOT include badge markdown
+- Do NOT repeat languages/frameworks in Tech Stack
+
+
+==============================
 REQUIRED STRUCTURE (EXACT)
-===========================
+==============================
 
-1. Title with emojis
-2. Short description (2–3 sentences)
-3. ✨ Key Features (bullets)
-4. 🧭 Simple Workflow (numbered)
-5. 🎯 Purpose
-6. 🧩 Installation & Usage
-7. 🛠️ Tech Stack (short descriptive paragraph, NOT bullet list)
+# 🔥 Project Title
 
-Project: ${owner}/${repo}
-Detected project type: ${projectType}
+Short description paragraph (2–3 sentences)
 
-===========================
-RELEVANT SOURCE CONTEXT
-===========================
+{{BADGES}}
 
+---
+
+## ✨ Key Features
+- 📝 Feature
+- ⚡ Feature
+
+---
+
+## 🧭 Simple Workflow
+1. Step one
+2. Step two
+3. Step three
+
+---
+
+## 🎯 Purpose
+Short purpose paragraph
+
+---
+
+## 🧩 Installation & Usage
+Include commands + localhost
+
+---
+
+## 🛠️ Tech Stack
+ONLY 1–2 sentence summary, no lists, no badge repeats
+
+
+==============================
+PROJECT INFO
+==============================
+
+
+
+Repo: ${owner}/${repo}
+Detected type: ${projectType}
+
+Relevant source context:
 ${Object.entries(fileContents)
   .map(([path, content]) => {
     return `--- FILE: ${path} ---\n${content.slice(0, 1200)}\n`;
   })
   .join("\n")}
 
-Return ONLY GitHub-flavored Markdown.
+Return ONLY Markdown.
 `;
 }

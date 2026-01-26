@@ -19,7 +19,7 @@ export default function GeneratePage() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-white flex items-center justify-center">
+    <main className="min-h-screen bg-black text-white flex items-center justify-center pt-24">
       <div className="max-w-xl w-full text-center space-y-6 px-6">
         <h1 className="text-3xl font-bold">Generate README</h1>
 

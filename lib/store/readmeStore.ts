@@ -8,6 +8,10 @@ export type StoredReadme = {
 
 const KEY = "mode-b-readme";
 
+/* ---------------------------- */
+/* Storage Helpers */
+/* ---------------------------- */
+
 export function setReadme(data: StoredReadme) {
   if (typeof window === "undefined") return;
   sessionStorage.setItem(KEY, JSON.stringify(data));
@@ -31,13 +35,25 @@ export function clearReadme() {
   sessionStorage.removeItem(KEY);
 }
 
+/* ---------------------------- */
+/* ✅ Hook */
+/* ---------------------------- */
+
+/**
+ * undefined → still loading (hydration not finished)
+ * null      → no README stored
+ * object    → README exists
+ */
 export function useStoredReadme() {
-  const [ stored, setStored] = useState<StoredReadme | null>(null);
+  const [stored, setStored] = useState<StoredReadme | null | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     const data = getReadme();
-    setStored(data);
+    setStored(data); // null or StoredReadme
   }, []);
 
-  return stored
+  return stored;
 }
+

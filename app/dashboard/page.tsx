@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { cookies } from "next/headers";
+import RepoSearch from "@/components/RepoSearch";
 
 export default async function DashboardPage() {
   const cookieStore = await cookies();
@@ -8,7 +8,7 @@ export default async function DashboardPage() {
   if (!token) {
     return (
       <main className="min-h-screen bg-black text-white flex items-center justify-center">
-        <p className="text-zinc-400">Not authenticated.</p>
+        <p className="text-zinc-500">Not authenticated.</p>
       </main>
     );
   }
@@ -24,52 +24,24 @@ export default async function DashboardPage() {
   const repos = data.repos || [];
 
   return (
-    <main className="min-h-screen bg-black text-white px-6 py-14">
-      <div className="max-w-4xl mx-auto space-y-10">
-        {/* Header */}
-        <div className="space-y-2">
-          <h1 className="text-4xl font-bold tracking-tight">
+    <main className="min-h-screen bg-black text-white px-6 py-14 linear-bg">
+      <div className="max-w-5xl mx-auto space-y-10">
+        <div className="space-y-3">
+          <h1 className="text-5xl font-bold tracking-tight">
             Choose a Repository
           </h1>
 
-          <p className="text-zinc-400 text-lg">
-            Select a repo and generate a Mode B product-style README.
+          <p className="text-zinc-400 text-lg max-w-xl">
+            Select a repo and instantly generate a{" "}
+            <span className="text-white font-medium">
+              Mode B product-style README
+            </span>
+            .
           </p>
         </div>
 
-        {/* Repo List */}
-        <div className="grid gap-4">
-          {repos.map((repo: any) => (
-            <Link
-              key={`${repo.owner.login}/${repo.name}`}
-              href={`/dashboard/${repo.owner}/${repo.name}`}
-              className="group block border border-zinc-800 rounded-xl p-5 hover:bg-zinc-900 transition"
-            >
-              <div className="flex justify-between items-center">
-                <div>
-                  <h2 className="text-lg font-semibold group-hover:text-white">
-                    {repo.name}
-                  </h2>
-
-                  <p className="text-sm text-zinc-500">
-                    {repo.private ? "🔒 Private" : "🌍 Public"} • ⭐{" "}
-                    {repo.stargazers_count}
-                  </p>
-                </div>
-
-                <span className="text-zinc-600 group-hover:text-white transition">
-                  →
-                </span>
-              </div>
-
-              {repo.description && (
-                <p className="mt-3 text-zinc-400 text-sm line-clamp-2">
-                  {repo.description}
-                </p>
-              )}
-            </Link>
-          ))}
-        </div>
+        {/* ✅ Client Component */}
+        <RepoSearch repos={repos} />
       </div>
     </main>
   );

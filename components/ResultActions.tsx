@@ -3,6 +3,14 @@
 import { useState } from "react";
 import { toast } from "sonner";
 
+import {
+  Github,
+  Copy,
+  GitBranch,
+  CheckCircle,
+  GitPullRequest,
+} from "lucide-react";
+
 export default function ResultActions({
   owner,
   repo,
@@ -14,7 +22,6 @@ export default function ResultActions({
   owner: string;
   repo: string;
   readme: string;
-
   branches: string[];
   branch: string;
   setBranch: (b: string) => void;
@@ -23,19 +30,19 @@ export default function ResultActions({
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  /* ======================= */
   /* ✅ Main Action */
+  /* ======================= */
   async function handleAction() {
     if (mode === "commit" && !branch) {
-      toast.error("Please select a branch first ❌");
+      toast.error("Select a branch first ❌");
       return;
     }
 
     setLoading(true);
 
     try {
-      /* ========================= */
-      /* ✅ COMMIT MODE */
-      /* ========================= */
+      /* ✅ COMMIT */
       if (mode === "commit") {
         toast.loading("Committing README...", { id: "commit" });
 
@@ -48,22 +55,19 @@ export default function ResultActions({
             repo,
             branch,
             content: readme,
-            message: "Add generated README",
           }),
         });
 
         if (!res.ok) throw new Error();
 
-        toast.success(`README committed to ${branch} ✅`, {
+        toast.success(`Committed to ${branch} ✅`, {
           id: "commit",
         });
       }
 
-      /* ========================= */
-      /* ✅ PR MODE */
-      /* ========================= */
+      /* ✅ PR */
       if (mode === "pr") {
-        toast.loading("Creating Pull Request...", { id: "pr" });
+        toast.loading("Creating PR...", { id: "pr" });
 
         const res = await fetch("/api/github/create-pr", {
           method: "POST",
@@ -80,150 +84,163 @@ export default function ResultActions({
 
         const data = await res.json();
 
-        toast.success("Pull Request created 🎉 Opening GitHub...", {
+        toast.success("Pull Request created 🎉", {
           id: "pr",
         });
 
         window.open(data.prUrl, "_blank");
       }
     } catch {
-      toast.error(
-        mode === "commit"
-          ? "Commit failed ❌"
-          : "Pull Request failed ❌"
-      );
+      toast.error("Action failed ❌");
     } finally {
       setLoading(false);
     }
   }
 
+  /* ======================= */
   /* ✅ Copy */
+  /* ======================= */
   async function copyToClipboard() {
     try {
       await navigator.clipboard.writeText(readme);
-
-      toast.success("README copied to clipboard 📋");
+      toast.success("Copied README 📋");
     } catch {
       toast.error("Copy failed ❌");
     }
   }
 
   return (
-    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 w-full">
-      {/* ======================= */}
-      {/* LEFT: Branch Selector */}
-      {/* ======================= */}
-      {mode === "commit" && (
-        <div className="flex items-center gap-2">
-          <p className="text-sm text-zinc-400">Target branch:</p>
+  <div className="w-full flex flex-col gap-4">
 
-          <select
-            value={branch}
-            onChange={(e) => {
-              setBranch(e.target.value);
-              toast.message(`Selected branch: ${e.target.value}`);
-            }}
-            className="px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-700 text-sm text-white"
-          >
-            {branches.length === 0 ? (
-              <option>No branches found</option>
-            ) : (
-              branches.map((b) => (
-                <option key={b} value={b}>
-                  {b}
-                </option>
-              ))
-            )}
-          </select>
-        </div>
-      )}
+    {/* ACTION ROW */}
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3 w-full">
 
-      {/* ======================= */}
-      {/* RIGHT: Action Buttons */}
-      {/* ======================= */}
-      <div className="flex items-center gap-3">
-        {/* Copy */}
-        <button
-          onClick={copyToClipboard}
-          className="pointer px-4 py-2 border border-zinc-700 rounded-xl hover:bg-zinc-900 transition text-sm"
-        >
-          Copy
-        </button>
+      {/* Branch Selector */}
+      <div className="flex items-center gap-2 w-full sm:w-auto">
+        <GitBranch size={16} className="text-zinc-500 shrink-0" />
 
-        {/* Split Commit / PR */}
-        <div className="flex overflow-hidden rounded-xl border border-zinc-700">
-          <button
-            disabled={loading}
-            onClick={() =>
+        <select
+          value={branch}
+          disabled={mode !== "commit"}
+          onChange={(e) => setBranch(e.target.value)}
+          className={`w-full sm:w-[170px] px-3 py-2 rounded-xl border text-sm
+            ${
               mode === "commit"
-                ? setConfirmOpen(true)
-                : handleAction()
-            }
-            className="px-6 py-2 bg-green-600 hover:bg-green-700 font-semibold text-white disabled:opacity-50"
-          >
-            {loading
-              ? "Working..."
-              : mode === "commit"
-              ? "Commit README"
-              : "Create PR"}
-          </button>
-
-          <select
-            value={mode}
-            onChange={(e) => {
-              setMode(e.target.value as any);
-
-              toast.message(
-                e.target.value === "commit"
-                  ? "Commit mode enabled ✅"
-                  : "PR mode enabled 🚀"
-              );
-            }}
-            className="bg-green-700 px-3 text-sm text-white cursor-pointer"
-          >
-            <option value="commit">Commit</option>
-            <option value="pr">PR</option>
-          </select>
-        </div>
+                ? "bg-zinc-900 border-zinc-700 text-white"
+                : "bg-zinc-950 border-zinc-800 text-zinc-600 cursor-not-allowed"
+            }`}
+        >
+          {branches.length === 0 ? (
+            <option>No branches</option>
+          ) : (
+            branches.map((b) => (
+              <option key={b} value={b}>
+                {b}
+              </option>
+            ))
+          )}
+        </select>
       </div>
 
-      {/* ======================= */}
-      {/* Confirm Commit Modal */}
-      {/* ======================= */}
-      {confirmOpen && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-          <div className="bg-zinc-900 border border-zinc-700 rounded-xl p-6 max-w-md w-full space-y-4">
-            <h2 className="font-bold text-lg">⚠️ Confirm Commit</h2>
+      {/* GitHub */}
+      <a
+        href={`https://github.com/${owner}/${repo}`}
+        target="_blank"
+        className="w-full sm:w-auto flex items-center justify-center gap-2
+                   px-4 py-2 rounded-xl border border-zinc-700 text-sm
+                   hover:bg-zinc-900 transition"
+      >
+        <Github size={16} />
+        GitHub
+      </a>
 
-            <p className="text-sm text-zinc-400">
-              Overwrite README.md in <b>{branch}</b>?
-            </p>
+      {/* Copy */}
+      <button
+        onClick={copyToClipboard}
+        className="w-full sm:w-auto flex items-center justify-center gap-2
+                   px-4 py-2 rounded-xl border border-zinc-700 text-sm
+                   hover:bg-zinc-900 transition"
+      >
+        <Copy size={16} />
+        Copy
+      </button>
 
-            <div className="flex gap-3">
-              <button
-                onClick={() => {
-                  setConfirmOpen(false);
-                  toast.message("Commit cancelled ❌");
-                }}
-                className="flex-1 border border-zinc-600 rounded-lg py-2 hover:bg-zinc-800"
-              >
-                Cancel
-              </button>
+      {/* Main Action */}
+      <button
+        disabled={loading}
+        onClick={() =>
+          mode === "commit" ? setConfirmOpen(true) : handleAction()
+        }
+        className="w-full sm:w-auto flex items-center justify-center gap-2
+                   px-6 py-2 rounded-xl bg-green-600 hover:bg-green-700
+                   font-semibold text-white disabled:opacity-50 transition
+                   min-w-[160px]"
+      >
+        {loading && (
+          <span className="h-4 w-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+        )}
 
-              <button
-                onClick={() => {
-                  setConfirmOpen(false);
-                  toast.success("Confirmed commit ✅");
-                  handleAction();
-                }}
-                className="flex-1 bg-green-600 rounded-lg py-2 font-semibold hover:bg-green-700"
-              >
-                Yes, Commit
-              </button>
-            </div>
+        {!loading && mode === "commit" && (
+          <>
+            <CheckCircle size={18} />
+            Commit
+          </>
+        )}
+
+        {!loading && mode === "pr" && (
+          <>
+            <GitPullRequest size={18} />
+            Create PR
+          </>
+        )}
+
+        {loading && (
+          <span>{mode === "commit" ? "Committing..." : "Creating..."}</span>
+        )}
+      </button>
+
+      {/* Mode Dropdown */}
+      <select
+        value={mode}
+        onChange={(e) => setMode(e.target.value as any)}
+        className="w-full sm:w-auto px-3 py-2 rounded-xl border border-zinc-700
+                   bg-zinc-950 text-sm cursor-pointer"
+      >
+        <option value="commit">Commit</option>
+        <option value="pr">PR</option>
+      </select>
+    </div>
+
+    {/* Confirm Modal */}
+    {confirmOpen && (
+      <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 px-4">
+        <div className="bg-zinc-900 border border-zinc-700 rounded-xl p-6 max-w-md w-full space-y-4">
+          <h2 className="font-bold text-lg">⚠️ Confirm Commit</h2>
+
+          <p className="text-sm text-zinc-400">
+            Overwrite README.md in <b>{branch}</b>?
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={() => setConfirmOpen(false)}
+              className="flex-1 border border-zinc-600 rounded-lg py-2 hover:bg-zinc-800 transition"
+            >
+              Cancel
+            </button>
+
+            <button
+              onClick={() => {
+                setConfirmOpen(false);
+                handleAction();
+              }}
+              className="flex-1 bg-green-600 rounded-lg py-2 font-semibold hover:bg-green-700 transition"
+            >
+              Yes, Commit
+            </button>
           </div>
         </div>
-      )}
-    </div>
-  );
-}
+      </div>
+    )}
+  </div>
+)};

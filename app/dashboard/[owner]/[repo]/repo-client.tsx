@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { Toaster, toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import PageTransition from "@/components/PageTransition";
+import { motion } from "framer-motion";
 
 import { setReadme } from "@/lib/store/readmeStore";
 
@@ -37,7 +39,7 @@ export default function RepoClient({
         setBranches(data.branches || []);
         setSelectedBranch(data.branches?.[0] || "");
       } catch {
-        toast.error("Failed to load branches");
+        toast.error("Failed to load branches ❌");
       }
     }
 
@@ -48,6 +50,8 @@ export default function RepoClient({
   async function generateReadme() {
     setLoading(true);
 
+    toast.loading("Generating README...", { id: "gen" });
+
     try {
       const res = await fetch("/api/generate", {
         method: "POST",
@@ -56,10 +60,7 @@ export default function RepoClient({
         body: JSON.stringify({ owner, repo }),
       });
 
-      if (!res.ok) {
-        toast.error("Generate failed ❌");
-        return;
-      }
+      if (!res.ok) throw new Error();
 
       const data = await res.json();
 
@@ -69,22 +70,27 @@ export default function RepoClient({
         content: data.readme,
       });
 
-      toast.success("README generated 🎉");
+      toast.success("README ready 🎉", { id: "gen" });
 
       router.push("/result");
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to generate README");
+    } catch {
+      toast.error("Generate failed ❌", { id: "gen" });
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <main className="min-h-screen bg-black text-white linear-bg px-6 py-14">
+    <PageTransition>
+    <main className="min-h-screen bg-black text-white px-6 py-14">
       <Toaster position="bottom-right" richColors />
 
-      <div className="max-w-5xl mx-auto space-y-10">
+      <motion.div
+        initial={{ opacity: 0, y: 25 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="max-w-5xl mx-auto space-y-10"
+      >
         {/* Header */}
         <div className="space-y-3">
           <h1 className="text-4xl font-bold tracking-tight">
@@ -92,13 +98,15 @@ export default function RepoClient({
           </h1>
 
           <p className="text-zinc-400 text-lg max-w-xl">
-            Readme Generator will create a clean product-style landing README with badges,
-            features, workflow, install steps, and GitHub commit/PR support.
+            Mode B product README with badges, install steps, and GitHub commit/PR.
           </p>
         </div>
 
         {/* Repo Card */}
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6 shadow-xl space-y-3">
+        <motion.div
+          whileHover={{ scale: 1.01 }}
+          className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6 shadow-xl space-y-3"
+        >
           <p className="text-sm text-zinc-500">Selected repository</p>
 
           <h2 className="text-2xl font-semibold">
@@ -113,17 +121,19 @@ export default function RepoClient({
               </span>
             </p>
           )}
-        </div>
+        </motion.div>
 
-        {/* CTA Actions */}
+        {/* CTA */}
         <div className="flex flex-col sm:flex-row gap-4">
-          <button
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            whileHover={{ scale: 1.02 }}
             onClick={generateReadme}
             disabled={loading}
             className="flex-1 px-6 py-4 rounded-2xl bg-white text-black font-semibold text-lg hover:bg-zinc-200 transition disabled:opacity-50"
           >
             {loading ? "Generating…" : "✨ Generate README"}
-          </button>
+          </motion.button>
 
           <Link
             href="/dashboard"
@@ -132,38 +142,8 @@ export default function RepoClient({
             ← Back
           </Link>
         </div>
-
-        {/* Feature Hint Row */}
-        <div className="grid md:grid-cols-3 gap-4 pt-6">
-          {[
-            {
-              title: "Product-ready",
-              desc: "No analyzer templates. Pure product README.",
-            },
-            {
-              title: "Badges Included",
-              desc: "Auto-injected under the intro.",
-            },
-            {
-              title: "Commit or PR",
-              desc: "Push instantly or open a pull request.",
-            },
-          ].map((f) => (
-            <div
-              key={f.title}
-              className="rounded-2xl border border-zinc-800 bg-zinc-950 p-5 hover:bg-zinc-900 transition"
-            >
-              <h3 className="font-semibold">{f.title}</h3>
-              <p className="text-sm text-zinc-400 mt-2">{f.desc}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Footer */}
-        <p className="text-xs text-zinc-600 text-center pt-8">
-          Premium README generation flow
-        </p>
-      </div>
+      </motion.div>
     </main>
+    </PageTransition>
   );
 }

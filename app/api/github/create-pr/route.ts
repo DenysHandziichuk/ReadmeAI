@@ -59,6 +59,7 @@ export async function POST(req: Request) {
         body: JSON.stringify({
           ref: `refs/heads/${newBranch}`,
           sha: baseSha,
+          credentials: "include",
         }),
       }
     );
@@ -104,6 +105,7 @@ const commitRes = await fetch(
     method: "PUT",
     headers,
     body: JSON.stringify(commitPayload),
+    credentials: "include"
   }
 );
 
@@ -124,6 +126,7 @@ console.log("README committed successfully");
       {
         method: "POST",
         headers,
+        credentials: "include",
         body: JSON.stringify({
           title: "Add AI-generated README",
           head: newBranch,

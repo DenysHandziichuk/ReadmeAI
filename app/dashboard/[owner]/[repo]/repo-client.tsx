@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { Toaster, toast } from "sonner";
-import ReactMarkdown from "react-markdown";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-import ResultActions from "@/components/ResultActions";
+import { setReadme } from "@/lib/store/readmeStore";
 
 export default function RepoClient({
   owner,
@@ -14,30 +14,29 @@ export default function RepoClient({
   owner: string;
   repo: string;
 }) {
-  const [readme, setReadme] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
   const [branches, setBranches] = useState<string[]>([]);
-  const [selectedBranch, setSelectedBranch] = useState<string>("");
+  const [selectedBranch, setSelectedBranch] = useState("");
 
- 
+  const router = useRouter();
+
+  /* ✅ Load branches */
   useEffect(() => {
     async function loadBranches() {
       try {
         const res = await fetch("/api/github/branches", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          credentials: "include",
           body: JSON.stringify({ owner, repo }),
         });
 
-        if (!res.ok) throw new Error("Failed to load branches");
+        if (!res.ok) return;
 
         const data = await res.json();
-
         setBranches(data.branches || []);
         setSelectedBranch(data.branches?.[0] || "");
-      } catch (err) {
-        console.error(err);
+      } catch {
         toast.error("Failed to load branches");
       }
     }
@@ -45,7 +44,7 @@ export default function RepoClient({
     loadBranches();
   }, [owner, repo]);
 
- 
+  /* ✅ Generate README */
   async function generateReadme() {
     setLoading(true);
 
@@ -53,15 +52,26 @@ export default function RepoClient({
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ owner, repo }),
       });
 
-      if (!res.ok) throw new Error("Request failed");
+      if (!res.ok) {
+        toast.error("Generate failed ❌");
+        return;
+      }
 
       const data = await res.json();
-      setReadme(data.readme);
+
+      setReadme({
+        owner,
+        repo,
+        content: data.readme,
+      });
 
       toast.success("README generated 🎉");
+
+      router.push("/result");
     } catch (err) {
       console.error(err);
       toast.error("Failed to generate README");
@@ -70,60 +80,89 @@ export default function RepoClient({
     }
   }
 
- 
-  
-
   return (
-    <main className="min-h-screen bg-black text-white px-8 py-12">
+    <main className="min-h-screen bg-black text-white linear-bg px-6 py-14">
       <Toaster position="bottom-right" richColors />
 
-      <div className="max-w-5xl mx-auto space-y-8">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold">
-            {owner}/{repo}
+      <div className="max-w-5xl mx-auto space-y-10">
+        {/* Header */}
+        <div className="space-y-3">
+          <h1 className="text-4xl font-bold tracking-tight">
+            Generate a Premium README
           </h1>
 
-          <p className="text-zinc-400">
-            Generate ap roduct-style README with badges, clean structure,
-            and GitHub-ready formatting.
+          <p className="text-zinc-400 text-lg max-w-xl">
+            Readme Generator will create a clean product-style landing README with badges,
+            features, workflow, install steps, and GitHub commit/PR support.
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-4">
+        {/* Repo Card */}
+        <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6 shadow-xl space-y-3">
+          <p className="text-sm text-zinc-500">Selected repository</p>
+
+          <h2 className="text-2xl font-semibold">
+            {owner}/{repo}
+          </h2>
+
+          {branches.length > 0 && (
+            <p className="text-sm text-zinc-400">
+              Default branch:{" "}
+              <span className="text-white font-medium">
+                {selectedBranch}
+              </span>
+            </p>
+          )}
+        </div>
+
+        {/* CTA Actions */}
+        <div className="flex flex-col sm:flex-row gap-4">
           <button
             onClick={generateReadme}
             disabled={loading}
-            className="px-5 py-3 bg-white text-black rounded-xl font-semibold hover:bg-zinc-200 transition disabled:opacity-50"
+            className="flex-1 px-6 py-4 rounded-2xl bg-white text-black font-semibold text-lg hover:bg-zinc-200 transition disabled:opacity-50"
           >
-            {loading ? "Generating..." : "Generate README"}
+            {loading ? "Generating…" : "✨ Generate README"}
           </button>
 
           <Link
             href="/dashboard"
-            className="px-5 py-3 border border-zinc-700 rounded-xl hover:bg-zinc-900 transition"
+            className="px-6 py-4 rounded-2xl border border-zinc-700 hover:bg-zinc-900 transition text-center font-medium"
           >
-            ← Back to Repositories
+            ← Back
           </Link>
         </div>
 
-        {readme && (
-          <div className="space-y-6 pt-6">
-            <div className="flex flex-wrap gap-3 items-center">
-              
+        {/* Feature Hint Row */}
+        <div className="grid md:grid-cols-3 gap-4 pt-6">
+          {[
+            {
+              title: "Product-ready",
+              desc: "No analyzer templates. Pure product README.",
+            },
+            {
+              title: "Badges Included",
+              desc: "Auto-injected under the intro.",
+            },
+            {
+              title: "Commit or PR",
+              desc: "Push instantly or open a pull request.",
+            },
+          ].map((f) => (
+            <div
+              key={f.title}
+              className="rounded-2xl border border-zinc-800 bg-zinc-950 p-5 hover:bg-zinc-900 transition"
+            >
+              <h3 className="font-semibold">{f.title}</h3>
+              <p className="text-sm text-zinc-400 mt-2">{f.desc}</p>
             </div>
+          ))}
+        </div>
 
-            {readme && (
-  <div className="space-y-6 pt-6">
-    <ResultActions owner={owner} repo={repo} readme={readme} />
-    
-
-    <div className="prose prose-invert max-w-none border border-zinc-800 rounded-xl p-6 bg-zinc-950">
-      <ReactMarkdown>{readme}</ReactMarkdown>
-    </div>
-  </div>
-)}
-          </div>
-        )}
+        {/* Footer */}
+        <p className="text-xs text-zinc-600 text-center pt-8">
+          Premium README generation flow
+        </p>
       </div>
     </main>
   );

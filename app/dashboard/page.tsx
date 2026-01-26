@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import RepoSearch from "@/components/RepoSearch";
+import PageTransition from "@/components/PageTransition";
 
 export default async function DashboardPage() {
   const cookieStore = await cookies();
@@ -24,7 +25,8 @@ export default async function DashboardPage() {
   const repos = data.repos || [];
 
   return (
-    <main className="min-h-screen bg-black text-white px-6 py-14 linear-bg">
+     <PageTransition>
+    <main className="min-h-screen bg-black text-white px-6 py-14 linear-bg pt-24">
       <div className="max-w-5xl mx-auto space-y-10">
         <div className="space-y-3">
           <h1 className="text-5xl font-bold tracking-tight">
@@ -44,5 +46,6 @@ export default async function DashboardPage() {
         <RepoSearch repos={repos} />
       </div>
     </main>
+    </PageTransition>
   );
 }

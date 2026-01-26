@@ -3,7 +3,9 @@
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import PageTransition from "@/components/PageTransition";
 
 import { useStoredReadme, clearReadme } from "@/lib/store/readmeStore";
 import ResultActions from "@/components/ResultActions";
@@ -67,8 +69,15 @@ export default function ResultPage() {
   if (!stored.content) return null;
 
   return (
-    <main className="min-h-screen bg-black text-white px-6 py-12">
-      <div className="max-w-6xl mx-auto space-y-10">
+    <PageTransition>
+    <main className="min-h-screen bg-black text-white px-6 py-12 pt-24">
+      <motion.div
+  initial={{ opacity: 0, y: 25 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.5 }}
+  className="max-w-6xl mx-auto space-y-10"
+>
+
         {/* Header */}
         <div>
           <h1 className="text-4xl font-bold">README Generated ✨</h1>
@@ -78,21 +87,52 @@ export default function ResultPage() {
         </div>
 
         {/* Actions */}
-        <ResultActions
-          owner={stored.owner}
-          repo={stored.repo}
-          readme={stored.content}
-          branches={branches}
-          branch={branch}
-          setBranch={setBranch}
-        />
+        {/* Actions Bar */}
+<motion.div
+  initial={{ opacity: 0, y: -10 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.2 }}
+  className="sticky top-6 z-40"
+>
+  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 
+                  rounded-2xl border border-zinc-800 bg-zinc-950/80 backdrop-blur 
+                  px-6 py-4 shadow-lg">
+
+    {/* Left hint */}
+    <div>
+      <p className="text-sm text-zinc-400">
+        Commit directly or open a PR — Mode B is ready.
+      </p>
+      <p className="text-xs text-zinc-600 mt-1">
+        Select a branch and publish instantly.
+      </p>
+    </div>
+
+    {/* Right actions */}
+    <ResultActions
+      owner={stored.owner}
+      repo={stored.repo}
+      readme={stored.content}
+      branches={branches}
+      branch={branch}
+      setBranch={setBranch}
+    />
+  </div>
+</motion.div>
+
 
         {/* Preview */}
-        <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-6">
-          <div className="prose prose-invert max-w-none">
-            <ReactMarkdown>{stored.content}</ReactMarkdown>
-          </div>
-        </div>
+        <motion.div
+  initial={{ opacity: 0, y: 15 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.15 }}
+  className="rounded-xl border border-zinc-800 bg-zinc-950 p-6"
+>
+  <div className="prose prose-invert max-w-none">
+    <ReactMarkdown>{stored.content}</ReactMarkdown>
+  </div>
+</motion.div>
+
 
         {/* Back */}
         <Link
@@ -102,7 +142,8 @@ export default function ResultPage() {
         >
           ← Back to repositories
         </Link>
-      </div>
+      </motion.div>
     </main>
+    </PageTransition>
   );
 }

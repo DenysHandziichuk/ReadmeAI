@@ -26,11 +26,18 @@ export async function POST(req: Request) {
   );
 
   if (!res.ok) {
-    return NextResponse.json(
-      { error: "Failed to fetch branches" },
-      { status: 500 }
-    );
-  }
+  const text = await res.text();
+
+  return NextResponse.json(
+    {
+      error: "Failed to fetch branches",
+      status: res.status,
+      details: text,
+    },
+    { status: res.status }
+  );
+}
+
 
   const data = await res.json();
 

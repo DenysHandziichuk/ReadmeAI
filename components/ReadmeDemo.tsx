@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
-const demoMarkdown = `# ⚡ Mode B README Generator
+const demoMarkdown = `# ⚡ README Generator
 
 🚀 Product-style README in seconds.
 
@@ -84,7 +84,7 @@ export default function ReadmeDemo() {
             animate={{ opacity: 1 }}
             className="prose prose-invert max-w-none"
           >
-            <h1>⚡ Mode B README Generator</h1>
+            <h1>⚡ README Generator</h1>
             <p>🚀 Product-style README in seconds.</p>
 
             <h2>✨ Features</h2>

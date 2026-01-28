@@ -51,8 +51,12 @@ export async function POST(req: Request) {
     /* 1️⃣ Fetch repo file list */
     const files = await fetchRepoFiles(owner, repo, token);
 
+    const importantFiles = selectImportantFiles(files);
+
+const fileContents: Record<string, string> = {};
+
     /* 2️⃣ Repo analysis (facts only) */
-    const analysis = analyzeRepo(files);
+    const analysis = analyzeRepo(files, fileContents);
 
     const projectType = detectProjectType(
       files,
@@ -60,10 +64,6 @@ export async function POST(req: Request) {
       analysis.frameworks
     );
 
-    /* 3️⃣ Load important file contents */
-    const importantFiles = selectImportantFiles(files);
-
-    const fileContents: Record<string, string> = {};
     for (const path of importantFiles) {
       const content = await fetchRepoFileContent(owner, repo, path, token);
 
@@ -73,7 +73,14 @@ export async function POST(req: Request) {
     }
 
     /* 4️⃣ Deterministic badges */
-    const tech = [...new Set([...analysis.languages, ...analysis.frameworks])];
+    const tech = [
+  ...new Set([
+    ...analysis.languages,
+    ...analysis.frameworks,
+    ...(analysis.tools || []),
+    ...(analysis.packageManager ? [analysis.packageManager] : []),
+  ]),
+];
 
     const badges = generateBadges(tech);
 

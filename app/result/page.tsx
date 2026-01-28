@@ -101,7 +101,7 @@ export default function ResultPage() {
     {/* Left hint */}
     <div>
       <p className="text-sm text-zinc-400">
-        Commit directly or open a PR — Mode B is ready.
+        Commit directly or open a PR — Readme Generator is ready.
       </p>
       <p className="text-xs text-zinc-600 mt-1">
         Select a branch and publish instantly.

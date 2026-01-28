@@ -76,7 +76,7 @@ export default function HomePage() {
         <div className="grid md:grid-cols-3 gap-6">
           {[
             {
-              title: "Mode B Only",
+              title: "Product style",
               desc: "No analyzer templates. Pure product landing README output.",
             },
             {
@@ -113,47 +113,13 @@ export default function HomePage() {
   </h2>
 
   <p className="text-zinc-400 mb-10 max-w-xl">
-    Watch how Mode B turns your repo into a product landing README.
+    Watch how READMEPro turns your repo into a product landing README.
   </p>
 
   <ReadmeDemo />
 </section>
 
-      {/* ======================= */}
-      {/* TESTIMONIALS */}
-      {/* ======================= */}
-      <section className="max-w-6xl mx-auto px-6 py-20">
-        <h2 className="text-3xl font-bold mb-10">
-          Developers love Mode B
-        </h2>
-
-        <div className="grid md:grid-cols-2 gap-6">
-          {[
-            {
-              name: "Open Source Maintainer",
-              quote:
-                "Finally my repos look like real products instead of unfinished projects.",
-            },
-            {
-              name: "Frontend Developer",
-              quote:
-                "The commit-to-branch workflow is insane. This feels premium.",
-            },
-          ].map((t) => (
-            <div
-              key={t.name}
-              className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6"
-            >
-              <p className="text-zinc-300 italic">“{t.quote}”</p>
-              <p className="text-sm text-zinc-500 mt-4">— {t.name}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ======================= */}
-      {/* FINAL CTA */}
-      {/* ======================= */}
+     
       <section className="px-6 py-24 text-center">
         <div className="max-w-3xl mx-auto space-y-6">
           <h2 className="text-4xl font-bold">
@@ -161,7 +127,7 @@ export default function HomePage() {
           </h2>
 
           <p className="text-zinc-400 text-lg">
-            Connect GitHub and generate your first Mode B README in seconds.
+            Connect GitHub and generate your first README in seconds.
           </p>
 
           <div className="flex justify-center">

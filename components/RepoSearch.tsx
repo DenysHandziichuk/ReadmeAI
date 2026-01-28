@@ -54,6 +54,7 @@ export default function RepoSearch({ repos }: { repos: any[] }) {
 
       {/* ✅ Animated Repo Grid */}
       <motion.div
+        key={query}
         variants={container}
         initial="hidden"
         animate="show"

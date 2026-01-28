@@ -131,7 +131,7 @@ console.log("README committed successfully");
           title: "Add AI-generated README",
           head: newBranch,
           base: defaultBranch,
-          body: "This PR adds a Mode B AI-generated README.",
+          body: "This PR adds a AI-generated README.",
         }),
       }
     );

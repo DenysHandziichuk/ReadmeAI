@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import RepoSearch from "@/components/RepoSearch";
 import PageTransition from "@/components/PageTransition";
+import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
   const cookieStore = await cookies();
@@ -36,7 +37,7 @@ export default async function DashboardPage() {
           <p className="text-zinc-400 text-lg max-w-xl">
             Select a repo and instantly generate a{" "}
             <span className="text-white font-medium">
-              Mode B product-style README
+              product-style README
             </span>
             .
           </p>

@@ -5,7 +5,6 @@ export async function POST(req: Request) {
   const { owner, repo, branch, content, message } = await req.json();
   const cookieStore = await cookies();
   const token = cookieStore.get("gh_token")?.value;
-  console.log("🔥 COMMIT API HIT");
 
 
   if (!token) {

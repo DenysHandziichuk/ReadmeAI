@@ -82,7 +82,7 @@ export default function RepoClient({
 
   return (
     <PageTransition>
-    <main className="min-h-screen bg-black text-white px-6 py-14">
+    <main className="pt-24 min-h-screen bg-black text-white px-6 py-14">
       <Toaster position="bottom-right" richColors />
 
       <motion.div
@@ -98,7 +98,7 @@ export default function RepoClient({
           </h1>
 
           <p className="text-zinc-400 text-lg max-w-xl">
-            Mode B product README with badges, install steps, and GitHub commit/PR.
+            Readme with badges, install steps, and GitHub commit/PR.
           </p>
         </div>
 

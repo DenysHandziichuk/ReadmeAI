@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import PageTransition from "@/components/PageTransition";
+import MarkdownPreview from "@/components/MarkdownPreview";
 
 import { useStoredReadme, clearReadme } from "@/lib/store/readmeStore";
 import ResultActions from "@/components/ResultActions";
@@ -120,17 +121,16 @@ export default function ResultPage() {
   </div>
 </motion.div>
 
-
-        {/* Preview */}
         <motion.div
   initial={{ opacity: 0, y: 15 }}
   animate={{ opacity: 1, y: 0 }}
   transition={{ delay: 0.15 }}
   className="rounded-xl border border-zinc-800 bg-zinc-950 p-6"
 >
-  <div className="prose prose-invert max-w-none">
-    <ReactMarkdown>{stored.content}</ReactMarkdown>
-  </div>
+  <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-6">
+  <MarkdownPreview content={stored.content} />
+</div>
+
 </motion.div>
 
 

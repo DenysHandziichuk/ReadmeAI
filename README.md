@@ -1,5 +1,5 @@
-# 🔥 READMEPro
-READMEPro is a Next.js application that utilizes various dependencies to provide a robust and efficient development experience. With its extensive range of features, READMEPro is an ideal choice for developers seeking to create high-quality, modern web applications. READMEPro is built with a focus on performance, scalability, and maintainability.
+# 🔥 ReadmeAI
+ReadmeAI is a Next.js application designed to provide a seamless and efficient experience for generating high-quality README files. With its robust features and modern architecture, ReadmeAI is an ideal choice for developers seeking to create professional and engaging project descriptions. ReadmeAI is built with a focus on performance, scalability, and maintainability.
 
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 ![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
@@ -12,32 +12,32 @@ READMEPro is a Next.js application that utilizes various dependencies to provide
 ## ✨ Key Features
 * 📝 Utilizes Next.js for server-side rendering and static site generation
 * ⚡ Leverages React for building reusable UI components
-* 📈 Supports authentication with Next-Auth
-* 📄 Uses React Markdown for rendering markdown content
-* 🎨 Styled with Tailwind CSS for a consistent and customizable design
+* 📈 Supports automatic generation of README files
+* 📊 Includes features for customizing and editing README content
+* 📁 Supports integration with GitHub repositories
 
 ---
 ## 🧭 Simple Workflow
-1. Open the READMEPro application
-2. Select a repository or paste input to generate a README
-3. Adjust settings and customize the output as needed
-4. Generate the README and review the results
-5. Copy or export the generated README for use in your project
+1. Open the ReadmeAI application
+2. Select a GitHub repository or enter a custom project description
+3. Adjust settings and customize the README content as needed
+4. Generate the README file
+5. Copy or export the generated README content
 
 ---
 ## 🎯 Purpose
-READMEPro is designed to simplify the process of creating high-quality README files for your projects, saving you time and effort while ensuring consistency and professionalism.
+The primary purpose of ReadmeAI is to provide a user-friendly and efficient way to generate high-quality README files for GitHub repositories, making it easier for developers to create and maintain professional project descriptions.
 
 ---
 ## 🧩 Installation & Usage
 ```bash
-git clone https://github.com/DenysHandziichuk/READMEPro
-cd READMEPro
+git clone https://github.com/DenysHandziichuk/ReadmeAI
+cd ReadmeAI
 npm install
 npm run dev
 ```
-Access the application at http://localhost:3000
+Access the application at http://localhost:3000 to start generating README files.
 
 ---
 ## 🛠️ Tech Stack
-READMEPro is built using Next.js, React, and Tailwind CSS, providing a robust and efficient development experience.
+ReadmeAI is built using Next.js, React, and a range of other modern technologies, providing a robust and scalable architecture for generating high-quality README files.

@@ -113,7 +113,7 @@ export default function HomePage() {
   </h2>
 
   <p className="text-zinc-400 mb-10 max-w-xl">
-    Watch how READMEPro turns your repo into a product landing README.
+    Watch how ReadmeAI turns your repo into a product landing README.
   </p>
 
   <ReadmeDemo />

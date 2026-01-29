@@ -6,8 +6,7 @@ export default function Navbar() {
   return (
     <header className="fixed top-0 left-0 w-full z-50 border-b border-zinc-800 bg-black/70 backdrop-blur">
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        
-        {/* Logo */}
+ 
         <Link
           href="/"
           className="text-lg font-bold tracking-tight"
@@ -15,7 +14,6 @@ export default function Navbar() {
           Readme<span className="text-green-400">AI</span>
         </Link>
 
-        {/* Right-side links */}
         <nav className="flex items-center gap-8 text-sm text-zinc-400">
           <a
             href="/#features"

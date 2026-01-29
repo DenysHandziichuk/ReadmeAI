@@ -14,7 +14,6 @@ body {
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont;
 }
 
-/* Linear-style glow background */
 .linear-bg {
   background: radial-gradient(
       circle at top,

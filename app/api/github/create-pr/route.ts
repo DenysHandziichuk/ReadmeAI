@@ -26,7 +26,6 @@ export async function POST(req: Request) {
   };
 
   try {
-    // 1️⃣ Get repo info → default branch
     const repoRes = await fetch(
       `https://api.github.com/repos/${owner}/${repo}`,
       { headers }
@@ -37,7 +36,6 @@ export async function POST(req: Request) {
 
     console.log("Default branch:", defaultBranch);
 
-    // 2️⃣ Get SHA of default branch
     const refRes = await fetch(
       `https://api.github.com/repos/${owner}/${repo}/git/ref/heads/${defaultBranch}`,
       { headers }
@@ -48,7 +46,6 @@ export async function POST(req: Request) {
 
     console.log("Base SHA:", baseSha);
 
-    // 3️⃣ Create new branch
     const newBranch = `readme-ai-${Date.now()}`;
 
     const createBranchRes = await fetch(
@@ -72,8 +69,6 @@ export async function POST(req: Request) {
 
     console.log("Branch created:", newBranch);
 
-    // 4️⃣ Commit README.md into new branch
-    // 4️⃣ Check if README already exists → get SHA
 let existingSha: string | null = null;
 
 const existingRes = await fetch(
@@ -87,14 +82,12 @@ if (existingRes.ok) {
   console.log("Existing README SHA:", existingSha);
 }
 
-// 5️⃣ Commit README.md into new branch
 const commitPayload: any = {
   message: "Add generated README (AI)",
   content: Buffer.from(content).toString("base64"),
   branch: newBranch,
 };
 
-// ✅ Required if README already exists
 if (existingSha) {
   commitPayload.sha = existingSha;
 }
@@ -120,7 +113,6 @@ console.log("README committed successfully");
 
     console.log("README committed to branch");
 
-    // 5️⃣ Open Pull Request
     const prRes = await fetch(
       `https://api.github.com/repos/${owner}/${repo}/pulls`,
       {

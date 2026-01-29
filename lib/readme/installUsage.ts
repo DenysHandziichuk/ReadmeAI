@@ -1,7 +1,4 @@
 export function generateInstallUsage(repoUrl: string, projectType: string) {
-  // ----------------------------
-  // Frontend (React/Vite/Next)
-  // ----------------------------
   if (projectType === "frontend") {
     return {
       installation: `
@@ -21,9 +18,6 @@ http://localhost:{{PORT}}
     };
   }
 
-  // ----------------------------
-  // Python project
-  // ----------------------------
   if (projectType === "python") {
     return {
       installation: `
@@ -44,9 +38,6 @@ python main.py
     };
   }
 
-  // ----------------------------
-  // C project
-  // ----------------------------
   if (projectType === "c") {
     return {
       installation: `
@@ -63,9 +54,7 @@ gcc main.c -o app
     };
   }
 
-  // ----------------------------
-  // Default fallback
-  // ----------------------------
+
   return {
     installation: "",
   };

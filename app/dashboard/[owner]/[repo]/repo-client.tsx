@@ -22,7 +22,6 @@ export default function RepoClient({
 
   const router = useRouter();
 
-  /* ✅ Load branches */
   useEffect(() => {
     async function loadBranches() {
       try {
@@ -46,7 +45,6 @@ export default function RepoClient({
     loadBranches();
   }, [owner, repo]);
 
-  /* ✅ Generate README */
   async function generateReadme() {
     setLoading(true);
 
@@ -91,7 +89,7 @@ export default function RepoClient({
         transition={{ duration: 0.4 }}
         className="max-w-5xl mx-auto space-y-10"
       >
-        {/* Header */}
+
         <div className="space-y-3">
           <h1 className="text-4xl font-bold tracking-tight">
             Generate a Premium README
@@ -102,7 +100,6 @@ export default function RepoClient({
           </p>
         </div>
 
-        {/* Repo Card */}
         <motion.div
           whileHover={{ scale: 1.01 }}
           className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6 shadow-xl space-y-3"
@@ -123,7 +120,6 @@ export default function RepoClient({
           )}
         </motion.div>
 
-        {/* CTA */}
         <div className="flex flex-col sm:flex-row gap-4">
           <motion.button
             whileTap={{ scale: 0.97 }}

@@ -3,16 +3,11 @@ export function detectProjectType(
   languages: string[],
   frameworks: string[]
 ) {
-  // --------------------
-  // Python project
-  // --------------------
+
   if (languages.includes("Python")) {
     return "python";
   }
 
-  // --------------------
-  // Frontend React/Vite/Next
-  // --------------------
   if (
     frameworks.includes("React") ||
     frameworks.includes("Vite") ||
@@ -21,9 +16,6 @@ export function detectProjectType(
     return "frontend";
   }
 
-  // --------------------
-  // Node backend
-  // --------------------
   if (
     files.includes("package.json") &&
     !frameworks.includes("React") &&

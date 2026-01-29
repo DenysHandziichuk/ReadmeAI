@@ -13,7 +13,6 @@ export async function POST(req: Request) {
 
   const encodedContent = Buffer.from(content).toString("base64");
 
-  // 1️⃣ Check if README exists
   const fileRes = await fetch(
     `https://api.github.com/repos/${owner}/${repo}/contents/README.md?ref=${branch}`,
     {
@@ -30,7 +29,6 @@ export async function POST(req: Request) {
     sha = fileData.sha;
   }
 
-  // 2️⃣ Create or update README
   const commitRes = await fetch(
     `https://api.github.com/repos/${owner}/${repo}/contents/README.md`,
     {

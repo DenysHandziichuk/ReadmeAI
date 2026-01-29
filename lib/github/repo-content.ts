@@ -18,7 +18,6 @@ export async function fetchRepoFileContent(
 
   const data = await res.json();
 
-  // GitHub returns base64 file content
   if (!data.content) return null;
 
   const decoded = Buffer.from(data.content, "base64").toString("utf-8");

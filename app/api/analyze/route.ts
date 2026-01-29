@@ -28,7 +28,6 @@ export async function POST(req: Request) {
   }
 
   try {
-    // 1️⃣ Fetch repo files
     const files = await fetchRepoFiles(owner, repo, token);
 
     const importantFiles = selectImportantFiles(files);
@@ -42,11 +41,8 @@ export async function POST(req: Request) {
         }
       }
 
-    // 2️⃣ Analyze repo
     const analysis = analyzeRepo(files, fileContents);
 
-
-    // 3️⃣ Generate README using FACTS
     const readme = generateReadme(owner, repo, analysis);
 
     return NextResponse.json({

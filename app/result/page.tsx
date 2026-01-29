@@ -18,7 +18,6 @@ export default function ResultPage() {
   const [branches, setBranches] = useState<string[]>([]);
   const [branch, setBranch] = useState("");
 
-  /* ✅ Redirect if nothing stored */
   useEffect(() => {
     if (!stored) return;
 
@@ -27,7 +26,6 @@ export default function ResultPage() {
     }
   }, [stored, router]);
 
-  /* ✅ Load branches */
   useEffect(() => {
     if (!stored) return;
     if (!stored.owner || !stored.repo) return;
@@ -58,7 +56,6 @@ export default function ResultPage() {
     loadBranches();
   }, [stored]);
 
-  /* ✅ Loading UI */
   if (!stored) {
     return (
       <main className="min-h-screen bg-black text-white flex items-center justify-center">
@@ -79,7 +76,6 @@ export default function ResultPage() {
   className="max-w-6xl mx-auto space-y-10"
 >
 
-        {/* Header */}
         <div>
           <h1 className="text-4xl font-bold">README Generated ✨</h1>
           <p className="text-zinc-400 mt-2">
@@ -87,8 +83,6 @@ export default function ResultPage() {
           </p>
         </div>
 
-        {/* Actions */}
-        {/* Actions Bar */}
 <motion.div
   initial={{ opacity: 0, y: -10 }}
   animate={{ opacity: 1, y: 0 }}
@@ -99,7 +93,6 @@ export default function ResultPage() {
                   rounded-2xl border border-zinc-800 bg-zinc-950/80 backdrop-blur 
                   px-6 py-4 shadow-lg">
 
-    {/* Left hint */}
     <div>
       <p className="text-sm text-zinc-400">
         Commit directly or open a PR — Readme Generator is ready.
@@ -109,7 +102,6 @@ export default function ResultPage() {
       </p>
     </div>
 
-    {/* Right actions */}
     <ResultActions
       owner={stored.owner}
       repo={stored.repo}
@@ -134,7 +126,6 @@ export default function ResultPage() {
 </motion.div>
 
 
-        {/* Back */}
         <Link
           href="/dashboard"
           onClick={() => clearReadme()}

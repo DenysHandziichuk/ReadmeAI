@@ -43,7 +43,6 @@ export default async function DashboardPage() {
           </p>
         </div>
 
-        {/* ✅ Client Component */}
         <RepoSearch repos={repos} />
       </div>
     </main>

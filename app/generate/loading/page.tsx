@@ -41,7 +41,6 @@ console.log("README STORED");
     generate();
   }, [params, router]);
 
-  // ⬇️ UI SKELETON — UNCHANGED ⬇️
   return (
     <main className="min-h-screen bg-black text-white flex items-center justify-center">
       <div className="max-w-md w-full px-6 space-y-6">

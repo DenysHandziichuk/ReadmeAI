@@ -1,11 +1,6 @@
 export function detectTools(files: string[]): string[] {
   const tools = new Set<string>();
 
-  /* ---------------------------
-   Testing Tools
-  ---------------------------- */
-
-  // ✅ Jest
   const hasJest = files.some(
     (f) =>
       f.startsWith("jest.config.") ||
@@ -15,7 +10,6 @@ export function detectTools(files: string[]): string[] {
 
   if (hasJest) tools.add("Jest");
 
-  // ✅ Vitest
   const hasVitest = files.some(
     (f) =>
       f.startsWith("vitest.config.") ||
@@ -24,7 +18,6 @@ export function detectTools(files: string[]): string[] {
 
   if (hasVitest) tools.add("Vitest");
 
-  // ✅ Playwright
   const hasPlaywright = files.some(
     (f) =>
       f.startsWith("playwright.config.") ||
@@ -33,11 +26,6 @@ export function detectTools(files: string[]): string[] {
 
   if (hasPlaywright) tools.add("Playwright");
 
-  /* ---------------------------
-   Code Quality Tools
-  ---------------------------- */
-
-  // ✅ ESLint
   const hasESLint = files.some(
     (f) =>
       f === ".eslintrc" ||
@@ -47,7 +35,6 @@ export function detectTools(files: string[]): string[] {
 
   if (hasESLint) tools.add("ESLint");
 
-  // ✅ Prettier
   const hasPrettier = files.some(
     (f) =>
       f === ".prettierrc" ||

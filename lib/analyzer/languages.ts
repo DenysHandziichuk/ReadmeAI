@@ -18,13 +18,11 @@ export function detectLanguages(files: string[]): string[] {
     f.includes("/dist/") ||
     f.includes("/build/");
 
-  // --- STATIC FILES (ROOT-LEVEL ALLOWED) ---
   const hasHtml = files.some(f => f.endsWith(".html"));
   const hasCss = files.some(f =>
     f.endsWith(".css") || f.endsWith(".scss")
   );
 
-  // --- SOURCE FILES (JS / TS ONLY) ---
   const sourceFiles = files.filter(
     f => isJsTsSource(f) && !isIgnored(f)
   );
@@ -43,12 +41,10 @@ export function detectLanguages(files: string[]): string[] {
   const hasPy = sourceFiles.some(f => f.endsWith(".py"));
   const hasGo = sourceFiles.some(f => f.endsWith(".go"));
 
-  // Embedded FIRST
   if (hasArduino) return ["Arduino", "C++"];
   if (hasCpp) return ["C++"];
   if (hasC) return ["C"];
 
-  // Static web (HTML/CSS only)
   if ((hasHtml || hasCss) && !hasJs && !hasTs) {
     const langs: string[] = [];
     if (hasHtml) langs.push("HTML");
@@ -56,7 +52,6 @@ export function detectLanguages(files: string[]): string[] {
     return langs;
   }
 
-  // Web apps
   if (hasTs) return ["TypeScript"];
   if (hasJs) {
     const langs: string[] = [];

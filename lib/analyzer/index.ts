@@ -13,7 +13,6 @@ export function analyzeRepo(
   const tools = detectTools(files);
   const packageManager = detectPackageManager(files);
 
-  // 🔥 Manifest detection
   const pkgTech = fileContents["package.json"]
     ? detectFromPackageJson(fileContents["package.json"])
     : [];

@@ -30,7 +30,7 @@ export default function RepoSearch({ repos }: { repos: any[] }) {
 
   return (
     <div className="space-y-8">
-      {/* ✅ Search Bar */}
+
       <div className="flex items-center gap-3 border border-zinc-800 bg-zinc-950 rounded-2xl px-5 py-3 shadow-lg">
         <span className="text-zinc-500 text-lg">⌕</span>
 
@@ -42,7 +42,6 @@ export default function RepoSearch({ repos }: { repos: any[] }) {
         />
       </div>
 
-      {/* ✅ Empty State */}
       {filtered.length === 0 && (
         <p className="text-center text-zinc-500 text-sm py-10">
           No repositories found for{" "}
@@ -52,7 +51,6 @@ export default function RepoSearch({ repos }: { repos: any[] }) {
         </p>
       )}
 
-      {/* ✅ Animated Repo Grid */}
       <motion.div
         key={query}
         variants={container}
@@ -71,20 +69,16 @@ export default function RepoSearch({ repos }: { repos: any[] }) {
               href={`/dashboard/${repo.owner}/${repo.name}`}
               className="group block rounded-2xl border border-zinc-800 bg-zinc-950 p-6 transition-all hover:bg-zinc-900 hover:shadow-xl"
             >
-              {/* Top Row */}
               <div className="flex justify-between items-start gap-4">
                 <div className="space-y-1">
-                  {/* Repo Name */}
                   <h2 className="text-lg font-semibold text-white group-hover:text-green-400 transition">
                     {repo.name}
                   </h2>
 
-                  {/* Owner */}
                   <p className="text-xs text-zinc-500 font-mono">
                     {repo.owner}
                   </p>
 
-                  {/* Visibility Badge */}
                   <span
                     className={`inline-block mt-2 text-xs px-2 py-1 rounded-full border ${
                       repo.private
@@ -96,13 +90,11 @@ export default function RepoSearch({ repos }: { repos: any[] }) {
                   </span>
                 </div>
 
-                {/* Arrow */}
                 <span className="text-zinc-700 group-hover:text-white transition text-xl">
                   →
                 </span>
               </div>
 
-              {/* Description */}
               {repo.description && (
                 <p className="mt-4 text-sm text-zinc-400 leading-relaxed line-clamp-2">
                   {repo.description}

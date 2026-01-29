@@ -12,7 +12,6 @@ import { groqRewrite } from "@/lib/groq/client";
 import { buildModeBPrompt } from "@/lib/readme/modeBPrompt";
 import { generateBadges } from "@/lib/readme/generateBadges";
 
-/* ✅ Badge injection helper (Mode B rule) */
 function injectBadgesAfterIntro(readme: string, badges: string) {
   const splitIndex = readme.indexOf("\n\n## ");
 
@@ -51,14 +50,12 @@ export async function POST(req: Request) {
   }
 
   try {
-    /* 1️⃣ Fetch repo file list */
     const files = await fetchRepoFiles(owner, repo, token);
 
     const importantFiles = selectImportantFiles(files);
 
 const fileContents: Record<string, string> = {};
 
-    /* 2️⃣ Repo analysis (facts only) */
     const analysis = analyzeRepo(files, fileContents);
 
     const projectType = detectProjectType(
@@ -75,7 +72,6 @@ const fileContents: Record<string, string> = {};
       }
     }
 
-    /* 4️⃣ Deterministic badges */
     const tech = [
   ...new Set([
     ...analysis.languages,
@@ -87,20 +83,16 @@ const fileContents: Record<string, string> = {};
 
     const badges = generateBadges(tech);
 
-    /* 5️⃣ AI generates FULL Mode B README body */
     const aiReadmeBody = await groqRewrite(
       "You output only valid GitHub-flavored Markdown.",
       buildModeBPrompt(owner, repo, displayTitle, projectType, fileContents)
     );
 
-    /* 6️⃣ Inject badges AFTER title + short intro */
     let finalReadme = aiReadmeBody.replace("{{BADGES}}", badges);
 
 
-    /* 7️⃣ Replace placeholders */
     const repoUrl = `https://github.com/${owner}/${repo}`;
 
- // Replace placeholders first
 finalReadme = finalReadme
   .replace("{{BADGES}}", badges)
   .replaceAll("{{REPO_URL}}", repoUrl)
@@ -116,8 +108,6 @@ finalReadme = finalReadme.replaceAll("{{REPO_NAME}}", repo);
 
 
 
-
-    /* ✅ Return final README */
     return NextResponse.json({
       analysis,
       readme: finalReadme,

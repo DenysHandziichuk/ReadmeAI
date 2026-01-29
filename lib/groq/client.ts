@@ -11,7 +11,7 @@ export async function groqRewrite(
       Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
     },
     body: JSON.stringify({
-      model: "llama-3.3-70b-versatile",  // use supported model
+      model: "llama-3.3-70b-versatile", 
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },

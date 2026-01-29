@@ -36,7 +36,6 @@ export default function ReadmeDemo() {
   const [text, setText] = useState("");
   const [tab, setTab] = useState<"raw" | "preview">("raw");
 
-  // Typing animation
   useEffect(() => {
     let i = 0;
     const interval = setInterval(() => {
@@ -51,7 +50,6 @@ export default function ReadmeDemo() {
   return (
     <div className="rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden shadow-xl">
 
-      {/* Top Tabs */}
       <div className="flex border-b border-zinc-800">
         {["raw", "preview"].map((t) => (
           <button
@@ -68,7 +66,6 @@ export default function ReadmeDemo() {
         ))}
       </div>
 
-      {/* Content */}
       <div className="p-6 h-[420px] overflow-y-auto font-mono text-sm leading-relaxed">
         {tab === "raw" ? (
           <motion.pre

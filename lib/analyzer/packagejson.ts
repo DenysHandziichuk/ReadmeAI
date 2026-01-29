@@ -9,15 +9,12 @@ export function detectFromPackageJson(pkgRaw: string) {
       ...pkg.devDependencies,
     };
 
-    // Frameworks
     if (deps.next) tech.push("NextJS");
     if (deps.react) tech.push("React");
     if (deps.express) tech.push("Express");
 
-    // Styling
     if (deps.tailwindcss) tech.push("TailwindCSS");
 
-    // Tools
     if (deps.eslint) tech.push("ESLint");
     if (deps.prettier) tech.push("Prettier");
     if (deps.jest) tech.push("Jest");

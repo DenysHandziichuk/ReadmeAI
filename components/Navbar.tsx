@@ -12,7 +12,7 @@ export default function Navbar() {
           href="/"
           className="text-lg font-bold tracking-tight"
         >
-          README<span className="text-green-400">Pro</span>
+          Readme<span className="text-green-400">AI</span>
         </Link>
 
         {/* Right-side links */}

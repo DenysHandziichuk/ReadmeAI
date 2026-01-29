@@ -31,9 +31,6 @@ export async function POST(req: Request) {
     // 1️⃣ Fetch repo files
     const files = await fetchRepoFiles(owner, repo, token);
 
-    // 2️⃣ Analyze repo
-    const analysis = analyzeRepo(files);
-
     const importantFiles = selectImportantFiles(files);
 
     const fileContents: Record<string, string> = {};
@@ -44,6 +41,9 @@ export async function POST(req: Request) {
         fileContents[path] = content;
         }
       }
+
+    // 2️⃣ Analyze repo
+    const analysis = analyzeRepo(files, fileContents);
 
 
     // 3️⃣ Generate README using FACTS

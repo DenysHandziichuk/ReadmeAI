@@ -32,14 +32,6 @@ body {
   background: transparent !important;
   color: white !important;
   padding: 2rem;
-  font-size: 16px;
-  line-height: 1.6;
-}
-
-.markdown-body h1,
-.markdown-body h2,
-.markdown-body h3 {
-  border-bottom: none !important;
 }
 
 .markdown-body pre {

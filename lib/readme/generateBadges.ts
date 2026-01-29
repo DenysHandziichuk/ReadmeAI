@@ -115,5 +115,5 @@ export function generateBadges(tech: string[]) {
   return tech
     .map(t => BADGES[t])
     .filter(Boolean)
-    .join(" ");
+    .join("\n");
 }

@@ -1,12 +1,47 @@
 export function buildModeBPrompt(
   owner: string,
   repo: string,
+  displayTitle: string,
   projectType: string,
   fileContents: Record<string, string>
 ) {
   return `
 You are a senior developer writing a polished, modern,
 landing-page style GitHub README.
+
+
+PROJECT NAME RULE:
+- The project is named: "${displayTitle}"
+- NEVER call it "my-app"
+- NEVER use any other name
+- Replace all mentions with "${displayTitle}"
+
+## 🧭 Simple Workflow
+
+WORKFLOW RULES:
+- This section explains how a USER uses the website/app
+- Do NOT mention installation, cloning, dependencies, or terminal commands
+- Do NOT include: git clone, npm, yarn, localhost
+- Use a numbered list with as many steps as needed (3–7 typical)
+- Steps should describe the UI flow, for example:
+  - Open the app
+  - Paste input or select a repo
+  - Adjust settings
+  - Generate the output
+  - Copy/export/publish results
+
+
+  FORBIDDEN IN WORKFLOW SECTION:
+- git clone
+- npm install
+- yarn
+- pnpm
+- terminal commands
+- localhost
+
+The workflow must read like instructions for an end user, not a developer.
+
+
 
 ==============================
 STRICT FORMATTING RULES
@@ -55,15 +90,12 @@ Short description paragraph (2–3 sentences)
 ---
 
 ## ✨ Key Features
-- 📝 Feature
-- ⚡ Feature
+Emoji bullet list
 
 ---
 
 ## 🧭 Simple Workflow
-1. Step one
-2. Step two
-3. Step three
+Numbered list
 
 ---
 

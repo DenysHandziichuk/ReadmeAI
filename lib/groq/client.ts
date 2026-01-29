@@ -2,7 +2,7 @@ const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 export async function groqRewrite(
   systemPrompt: string,
-  userPrompt: string
+  userPrompt: string,
 ): Promise<string> {
   const res = await fetch(GROQ_API_URL, {
     method: "POST",
@@ -11,7 +11,7 @@ export async function groqRewrite(
       Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
     },
     body: JSON.stringify({
-      model: "llama-3.3-70b-versatile", 
+      model: "llama-3.3-70b-versatile",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },

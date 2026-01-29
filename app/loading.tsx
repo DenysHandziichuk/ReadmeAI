@@ -1,9 +1,7 @@
 export default function Loading() {
   return (
-    <main className="min-h-screen bg-black text-white flex items-center justify-center">
-      <p className="text-zinc-500 animate-pulse">
-        Loading...
-      </p>
+    <main className="flex min-h-screen items-center justify-center bg-black text-white">
+      <p className="animate-pulse text-zinc-500">Loading...</p>
     </main>
   );
 }

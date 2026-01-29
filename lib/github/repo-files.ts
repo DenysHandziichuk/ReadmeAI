@@ -1,7 +1,7 @@
 export async function fetchRepoFiles(
   owner: string,
   repo: string,
-  token: string
+  token: string,
 ): Promise<string[]> {
   const res = await fetch(
     `https://api.github.com/repos/${owner}/${repo}/git/trees/HEAD?recursive=1`,
@@ -10,7 +10,7 @@ export async function fetchRepoFiles(
         Authorization: `Bearer ${token}`,
         Accept: "application/vnd.github+json",
       },
-    }
+    },
   );
 
   if (!res.ok) {

@@ -1,9 +1,8 @@
 export function detectProjectType(
   files: string[],
   languages: string[],
-  frameworks: string[]
+  frameworks: string[],
 ) {
-
   if (languages.includes("Python")) {
     return "python";
   }

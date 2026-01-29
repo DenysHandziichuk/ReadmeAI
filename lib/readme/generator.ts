@@ -7,17 +7,13 @@ type Analysis = {
 export function generateReadme(
   owner: string,
   repo: string,
-  analysis: Analysis
+  analysis: Analysis,
 ): string {
   const { languages, frameworks, packageManager } = analysis;
 
-  const langLine = languages.length
-    ? languages.join(", ")
-    : "Not specified";
+  const langLine = languages.length ? languages.join(", ") : "Not specified";
 
-  const frameworkLine = frameworks.length
-    ? frameworks.join(", ")
-    : "None";
+  const frameworkLine = frameworks.length ? frameworks.join(", ") : "None";
 
   let install = "No installation required.";
   let usage = "See source code for usage.";
@@ -29,7 +25,6 @@ export function generateReadme(
     install = "poetry install";
     usage = "poetry run python main.py";
   }
-
 
   if (packageManager === "npm") {
     install = "npm install";

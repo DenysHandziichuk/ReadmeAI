@@ -3,7 +3,6 @@
 @reference "tailwindcss"
 @import "github-markdown-css/github-markdown.css";
 
-
 html,
 body {
   height: 100%;
@@ -11,20 +10,17 @@ body {
 
 body {
   @apply bg-black text-white antialiased;
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont;
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont;
 }
 
 .linear-bg {
-  background: radial-gradient(
-      circle at top,
-      rgba(34, 197, 94, 0.12),
-      transparent 55%
-    ),
-    radial-gradient(
-      circle at bottom,
-      rgba(59, 130, 246, 0.08),
-      transparent 60%
-    );
+  background:
+    radial-gradient(circle at top, rgba(34, 197, 94, 0.12), transparent 55%),
+    radial-gradient(circle at bottom, rgba(59, 130, 246, 0.08), transparent 60%);
 }
 
 .markdown-body {

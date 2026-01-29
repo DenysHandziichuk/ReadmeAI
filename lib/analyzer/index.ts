@@ -6,7 +6,7 @@ import { detectFromPackageJson } from "./packagejson";
 
 export function analyzeRepo(
   files: string[],
-  fileContents: Record<string, string>
+  fileContents: Record<string, string>,
 ) {
   const languages = detectLanguages(files);
   const frameworks = detectFrameworks(files);
@@ -24,4 +24,3 @@ export function analyzeRepo(
     packageManager,
   };
 }
-

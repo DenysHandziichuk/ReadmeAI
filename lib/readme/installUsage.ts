@@ -54,7 +54,6 @@ gcc main.c -o app
     };
   }
 
-
   return {
     installation: "",
   };

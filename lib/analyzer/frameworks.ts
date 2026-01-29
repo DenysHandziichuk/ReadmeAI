@@ -6,7 +6,7 @@ export function detectFrameworks(files: string[]): string[] {
       f === "next-env.d.ts" ||
       f.startsWith("app/") ||
       f.startsWith("pages/") ||
-      f.startsWith("next.config.")
+      f.startsWith("next.config."),
   );
 
   if (hasNextJs) frameworks.add("NextJS");
@@ -14,7 +14,7 @@ export function detectFrameworks(files: string[]): string[] {
   const hasReactSource = files.some(
     (f) =>
       (f.endsWith(".jsx") || f.endsWith(".tsx")) &&
-      (f.includes("/src/") || f.startsWith("src/"))
+      (f.includes("/src/") || f.startsWith("src/")),
   );
 
   if (hasReactSource && !hasNextJs) {
@@ -34,10 +34,7 @@ export function detectFrameworks(files: string[]): string[] {
   if (hasWebpack) frameworks.add("Webpack");
 
   const hasExpress = files.some(
-    (f) =>
-      f === "server.js" ||
-      f === "app.js" ||
-      f.startsWith("routes/")
+    (f) => f === "server.js" || f === "app.js" || f.startsWith("routes/"),
   );
 
   if (hasExpress) frameworks.add("Express");
@@ -46,19 +43,17 @@ export function detectFrameworks(files: string[]): string[] {
   if (hasNest) frameworks.add("NestJS");
 
   const hasTailwind = files.some(
-  (f) =>
-    f.startsWith("tailwind.config.") ||
-    f === "postcss.config.js" ||
-    f === "postcss.config.cjs" ||
-    f === "postcss.config.mjs" ||
-    f.includes("globals.css")
-);
+    (f) =>
+      f.startsWith("tailwind.config.") ||
+      f === "postcss.config.js" ||
+      f === "postcss.config.cjs" ||
+      f === "postcss.config.mjs" ||
+      f.includes("globals.css"),
+  );
 
   if (hasTailwind) frameworks.add("TailwindCSS");
 
-  const hasBootstrap = files.some((f) =>
-    f.includes("bootstrap")
-  );
+  const hasBootstrap = files.some((f) => f.includes("bootstrap"));
   if (hasBootstrap) frameworks.add("Bootstrap");
 
   if (files.includes("platformio.ini")) {

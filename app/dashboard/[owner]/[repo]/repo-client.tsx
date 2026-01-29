@@ -80,66 +80,63 @@ export default function RepoClient({
 
   return (
     <PageTransition>
-    <main className="pt-24 min-h-screen bg-black text-white px-6 py-14">
-      <Toaster position="bottom-right" richColors />
-
-      <motion.div
-        initial={{ opacity: 0, y: 25 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="max-w-5xl mx-auto space-y-10"
-      >
-
-        <div className="space-y-3">
-          <h1 className="text-4xl font-bold tracking-tight">
-            Generate a Premium README
-          </h1>
-
-          <p className="text-zinc-400 text-lg max-w-xl">
-            Readme with badges, install steps, and GitHub commit/PR.
-          </p>
-        </div>
+      <main className="min-h-screen bg-black px-6 py-14 pt-24 text-white">
+        <Toaster position="bottom-right" richColors />
 
         <motion.div
-          whileHover={{ scale: 1.01 }}
-          className="rounded-2xl border border-zinc-800 bg-zinc-950 p-6 shadow-xl space-y-3"
+          initial={{ opacity: 0, y: 25 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="mx-auto max-w-5xl space-y-10"
         >
-          <p className="text-sm text-zinc-500">Selected repository</p>
+          <div className="space-y-3">
+            <h1 className="text-4xl font-bold tracking-tight">
+              Generate a Premium README
+            </h1>
 
-          <h2 className="text-2xl font-semibold">
-            {owner}/{repo}
-          </h2>
-
-          {branches.length > 0 && (
-            <p className="text-sm text-zinc-400">
-              Default branch:{" "}
-              <span className="text-white font-medium">
-                {selectedBranch}
-              </span>
+            <p className="max-w-xl text-lg text-zinc-400">
+              Readme with badges, install steps, and GitHub commit/PR.
             </p>
-          )}
+          </div>
+
+          <motion.div
+            whileHover={{ scale: 1.01 }}
+            className="space-y-3 rounded-2xl border border-zinc-800 bg-zinc-950 p-6 shadow-xl"
+          >
+            <p className="text-sm text-zinc-500">Selected repository</p>
+
+            <h2 className="text-2xl font-semibold">
+              {owner}/{repo}
+            </h2>
+
+            {branches.length > 0 && (
+              <p className="text-sm text-zinc-400">
+                Default branch:{" "}
+                <span className="font-medium text-white">{selectedBranch}</span>
+              </p>
+            )}
+          </motion.div>
+
+          <div className="flex flex-col gap-4 sm:flex-row">
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              whileHover={{ scale: 1.02 }}
+              onClick={generateReadme}
+              disabled={loading}
+              className="flex-1 rounded-2xl bg-white px-6 py-4 text-lg font-semibold text-black transition hover:bg-zinc-200 disabled:opacity-50"
+            >
+              {loading ? "Generating…" : "✨ Generate README"}
+            </motion.button>
+
+            <Link
+              href="/dashboard"
+              className="rounded-2xl border border-zinc-700 px-6 py-4 text-center font-medium transition hover:bg-zinc-900"
+            >
+              ← Back
+            </Link>
+          </div>
         </motion.div>
-
-        <div className="flex flex-col sm:flex-row gap-4">
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            whileHover={{ scale: 1.02 }}
-            onClick={generateReadme}
-            disabled={loading}
-            className="flex-1 px-6 py-4 rounded-2xl bg-white text-black font-semibold text-lg hover:bg-zinc-200 transition disabled:opacity-50"
-          >
-            {loading ? "Generating…" : "✨ Generate README"}
-          </motion.button>
-
-          <Link
-            href="/dashboard"
-            className="px-6 py-4 rounded-2xl border border-zinc-700 hover:bg-zinc-900 transition text-center font-medium"
-          >
-            ← Back
-          </Link>
-        </div>
-      </motion.div>
-    </main>
+      </main>
     </PageTransition>
   );
 }

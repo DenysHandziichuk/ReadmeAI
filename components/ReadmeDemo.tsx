@@ -48,8 +48,7 @@ export default function ReadmeDemo() {
   }, []);
 
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden shadow-xl">
-
+    <div className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950 shadow-xl">
       <div className="flex border-b border-zinc-800">
         {["raw", "preview"].map((t) => (
           <button
@@ -66,7 +65,7 @@ export default function ReadmeDemo() {
         ))}
       </div>
 
-      <div className="p-6 h-[420px] overflow-y-auto font-mono text-sm leading-relaxed">
+      <div className="h-[420px] overflow-y-auto p-6 font-mono text-sm leading-relaxed">
         {tab === "raw" ? (
           <motion.pre
             initial={{ opacity: 0 }}

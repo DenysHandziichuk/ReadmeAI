@@ -9,7 +9,7 @@ export default async function DashboardPage() {
 
   if (!token) {
     return (
-      <main className="min-h-screen bg-black text-white flex items-center justify-center">
+      <main className="flex min-h-screen items-center justify-center bg-black text-white">
         <p className="text-zinc-500">Not authenticated.</p>
       </main>
     );
@@ -26,26 +26,26 @@ export default async function DashboardPage() {
   const repos = data.repos || [];
 
   return (
-     <PageTransition>
-    <main className="min-h-screen bg-black text-white px-6 py-14 linear-bg pt-24">
-      <div className="max-w-5xl mx-auto space-y-10">
-        <div className="space-y-3">
-          <h1 className="text-5xl font-bold tracking-tight">
-            Choose a Repository
-          </h1>
+    <PageTransition>
+      <main className="linear-bg min-h-screen bg-black px-6 py-14 pt-24 text-white">
+        <div className="mx-auto max-w-5xl space-y-10">
+          <div className="space-y-3">
+            <h1 className="text-5xl font-bold tracking-tight">
+              Choose a Repository
+            </h1>
 
-          <p className="text-zinc-400 text-lg max-w-xl">
-            Select a repo and instantly generate a{" "}
-            <span className="text-white font-medium">
-              product-style README
-            </span>
-            .
-          </p>
+            <p className="max-w-xl text-lg text-zinc-400">
+              Select a repo and instantly generate a{" "}
+              <span className="font-medium text-white">
+                product-style README
+              </span>
+              .
+            </p>
+          </div>
+
+          <RepoSearch repos={repos} />
         </div>
-
-        <RepoSearch repos={repos} />
-      </div>
-    </main>
+      </main>
     </PageTransition>
   );
 }

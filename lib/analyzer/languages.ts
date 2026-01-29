@@ -18,28 +18,24 @@ export function detectLanguages(files: string[]): string[] {
     f.includes("/dist/") ||
     f.includes("/build/");
 
-  const hasHtml = files.some(f => f.endsWith(".html"));
-  const hasCss = files.some(f =>
-    f.endsWith(".css") || f.endsWith(".scss")
-  );
+  const hasHtml = files.some((f) => f.endsWith(".html"));
+  const hasCss = files.some((f) => f.endsWith(".css") || f.endsWith(".scss"));
 
-  const sourceFiles = files.filter(
-    f => isJsTsSource(f) && !isIgnored(f)
-  );
+  const sourceFiles = files.filter((f) => isJsTsSource(f) && !isIgnored(f));
 
   const hasTs = sourceFiles.some(
-    f => f.endsWith(".ts") || f.endsWith(".tsx")
+    (f) => f.endsWith(".ts") || f.endsWith(".tsx"),
   );
 
   const hasJs = sourceFiles.some(
-    f => f.endsWith(".js") || f.endsWith(".jsx")
+    (f) => f.endsWith(".js") || f.endsWith(".jsx"),
   );
 
-  const hasArduino = sourceFiles.some(f => f.endsWith(".ino"));
-  const hasCpp = sourceFiles.some(f => f.endsWith(".cpp"));
-  const hasC = sourceFiles.some(f => f.endsWith(".c"));
-  const hasPy = sourceFiles.some(f => f.endsWith(".py"));
-  const hasGo = sourceFiles.some(f => f.endsWith(".go"));
+  const hasArduino = sourceFiles.some((f) => f.endsWith(".ino"));
+  const hasCpp = sourceFiles.some((f) => f.endsWith(".cpp"));
+  const hasC = sourceFiles.some((f) => f.endsWith(".c"));
+  const hasPy = sourceFiles.some((f) => f.endsWith(".py"));
+  const hasGo = sourceFiles.some((f) => f.endsWith(".go"));
 
   if (hasArduino) return ["Arduino", "C++"];
   if (hasCpp) return ["C++"];

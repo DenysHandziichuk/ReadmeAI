@@ -19,8 +19,8 @@ export default function GeneratePage() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-white flex items-center justify-center pt-24">
-      <div className="max-w-xl w-full text-center space-y-6 px-6">
+    <main className="flex min-h-screen items-center justify-center bg-black pt-24 text-white">
+      <div className="w-full max-w-xl space-y-6 px-6 text-center">
         <h1 className="text-3xl font-bold">Generate README</h1>
 
         <p className="text-zinc-400">
@@ -33,7 +33,7 @@ export default function GeneratePage() {
 
         <button
           onClick={handleGenerate}
-          className="w-full py-3 bg-white text-black rounded-lg font-medium hover:bg-zinc-200 transition"
+          className="w-full rounded-lg bg-white py-3 font-medium text-black transition hover:bg-zinc-200"
         >
           Generate README
         </button>

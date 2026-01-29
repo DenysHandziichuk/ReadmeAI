@@ -27,13 +27,12 @@ export default function LoadingPage() {
       const data = await res.json();
 
       setReadme({
-  owner: owner as string,
-  repo: repo as string,
-  content: data.readme,
-});
+        owner: owner as string,
+        repo: repo as string,
+        content: data.readme,
+      });
 
-console.log("README STORED");
-
+      console.log("README STORED");
 
       router.replace("/result");
     }
@@ -42,13 +41,13 @@ console.log("README STORED");
   }, [params, router]);
 
   return (
-    <main className="min-h-screen bg-black text-white flex items-center justify-center">
-      <div className="max-w-md w-full px-6 space-y-6">
-        <div className="h-6 bg-zinc-800 rounded animate-pulse" />
-        <div className="h-6 bg-zinc-800 rounded animate-pulse w-3/4" />
-        <div className="h-6 bg-zinc-800 rounded animate-pulse w-1/2" />
+    <main className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="w-full max-w-md space-y-6 px-6">
+        <div className="h-6 animate-pulse rounded bg-zinc-800" />
+        <div className="h-6 w-3/4 animate-pulse rounded bg-zinc-800" />
+        <div className="h-6 w-1/2 animate-pulse rounded bg-zinc-800" />
 
-        <p className="text-zinc-400 text-center pt-4">
+        <p className="pt-4 text-center text-zinc-400">
           Analyzing repository and generating README…
         </p>
       </div>

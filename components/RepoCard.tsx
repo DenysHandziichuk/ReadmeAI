@@ -8,7 +8,7 @@ export default function RepoCard({
   return (
     <Link
       href={`/dashboard/${repo.owner}/${repo.name}`}
-      className="block border rounded p-3 hover:bg-zinc-100"
+      className="block rounded border p-3 hover:bg-zinc-100"
     >
       {repo.owner}/{repo.name}
     </Link>

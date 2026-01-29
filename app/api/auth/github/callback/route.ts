@@ -25,7 +25,7 @@ export async function GET(req: Request) {
           client_secret: config.github.clientSecret,
           code,
         }),
-      }
+      },
     );
 
     const data = await tokenRes.json();
@@ -35,9 +35,7 @@ export async function GET(req: Request) {
       return NextResponse.json(data, { status: 400 });
     }
 
-    const res = NextResponse.redirect(
-        new URL("/dashboard", req.url)
-    )
+    const res = NextResponse.redirect(new URL("/dashboard", req.url));
     res.cookies.set("gh_token", data.access_token, {
       httpOnly: true,
       sameSite: "lax",

@@ -5,23 +5,19 @@ export function detectTools(files: string[]): string[] {
     (f) =>
       f.startsWith("jest.config.") ||
       f.includes("__tests__/") ||
-      f.startsWith("test/")
+      f.startsWith("test/"),
   );
 
   if (hasJest) tools.add("Jest");
 
   const hasVitest = files.some(
-    (f) =>
-      f.startsWith("vitest.config.") ||
-      f.includes("vitest")
+    (f) => f.startsWith("vitest.config.") || f.includes("vitest"),
   );
 
   if (hasVitest) tools.add("Vitest");
 
   const hasPlaywright = files.some(
-    (f) =>
-      f.startsWith("playwright.config.") ||
-      f.includes("playwright")
+    (f) => f.startsWith("playwright.config.") || f.includes("playwright"),
   );
 
   if (hasPlaywright) tools.add("Playwright");
@@ -30,7 +26,7 @@ export function detectTools(files: string[]): string[] {
     (f) =>
       f === ".eslintrc" ||
       f.startsWith(".eslintrc.") ||
-      f === "eslint.config.js"
+      f === "eslint.config.js",
   );
 
   if (hasESLint) tools.add("ESLint");
@@ -39,7 +35,7 @@ export function detectTools(files: string[]): string[] {
     (f) =>
       f === ".prettierrc" ||
       f.startsWith(".prettierrc.") ||
-      f.startsWith("prettier.config.")
+      f.startsWith("prettier.config."),
   );
 
   if (hasPrettier) tools.add("Prettier");

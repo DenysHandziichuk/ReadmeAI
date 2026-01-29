@@ -58,7 +58,7 @@ export default function ResultPage() {
 
   if (!stored) {
     return (
-      <main className="min-h-screen bg-black text-white flex items-center justify-center">
+      <main className="flex min-h-screen items-center justify-center bg-black text-white">
         <p className="text-zinc-500">Loading…</p>
       </main>
     );
@@ -68,73 +68,67 @@ export default function ResultPage() {
 
   return (
     <PageTransition>
-    <main className="min-h-screen bg-black text-white px-6 py-12 pt-24">
-      <motion.div
-  initial={{ opacity: 0, y: 25 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.5 }}
-  className="max-w-6xl mx-auto space-y-10"
->
-
-        <div>
-          <h1 className="text-4xl font-bold">README Generated ✨</h1>
-          <p className="text-zinc-400 mt-2">
-            {stored.owner}/{stored.repo}
-          </p>
-        </div>
-
-<motion.div
-  initial={{ opacity: 0, y: -10 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ delay: 0.2 }}
-  className="sticky top-6 z-40"
->
-  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 
-                  rounded-2xl border border-zinc-800 bg-zinc-950/80 backdrop-blur 
-                  px-6 py-4 shadow-lg">
-
-    <div>
-      <p className="text-sm text-zinc-400">
-        Commit directly or open a PR — Readme Generator is ready.
-      </p>
-      <p className="text-xs text-zinc-600 mt-1">
-        Select a branch and publish instantly.
-      </p>
-    </div>
-
-    <ResultActions
-      owner={stored.owner}
-      repo={stored.repo}
-      readme={stored.content}
-      branches={branches}
-      branch={branch}
-      setBranch={setBranch}
-    />
-  </div>
-</motion.div>
-
+      <main className="min-h-screen bg-black px-6 py-12 pt-24 text-white">
         <motion.div
-  initial={{ opacity: 0, y: 15 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ delay: 0.15 }}
-  className="rounded-xl border border-zinc-800 bg-zinc-950 p-6"
->
-  <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-6">
-  <MarkdownPreview content={stored.content} />
-</div>
-
-</motion.div>
-
-
-        <Link
-          href="/dashboard"
-          onClick={() => clearReadme()}
-          className="text-sm text-zinc-500 hover:text-white"
+          initial={{ opacity: 0, y: 25 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mx-auto max-w-6xl space-y-10"
         >
-          ← Back to repositories
-        </Link>
-      </motion.div>
-    </main>
+          <div>
+            <h1 className="text-4xl font-bold">README Generated ✨</h1>
+            <p className="mt-2 text-zinc-400">
+              {stored.owner}/{stored.repo}
+            </p>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="sticky top-6 z-40"
+          >
+            <div className="flex flex-col gap-4 rounded-2xl border border-zinc-800 bg-zinc-950/80 px-6 py-4 shadow-lg backdrop-blur md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="text-sm text-zinc-400">
+                  Commit directly or open a PR — Readme Generator is ready.
+                </p>
+                <p className="mt-1 text-xs text-zinc-600">
+                  Select a branch and publish instantly.
+                </p>
+              </div>
+
+              <ResultActions
+                owner={stored.owner}
+                repo={stored.repo}
+                readme={stored.content}
+                branches={branches}
+                branch={branch}
+                setBranch={setBranch}
+              />
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="rounded-xl border border-zinc-800 bg-zinc-950 p-6"
+          >
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-6">
+              <MarkdownPreview content={stored.content} />
+            </div>
+          </motion.div>
+
+          <Link
+            href="/dashboard"
+            onClick={() => clearReadme()}
+            className="text-sm text-zinc-500 hover:text-white"
+          >
+            ← Back to repositories
+          </Link>
+        </motion.div>
+      </main>
     </PageTransition>
   );
 }

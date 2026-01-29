@@ -1,9 +1,9 @@
 export default function LoginPage() {
   return (
-    <main className="min-h-screen flex items-center justify-center">
+    <main className="flex min-h-screen items-center justify-center">
       <a
         href="/api/auth/github"
-        className="px-6 py-3 rounded bg-black text-white font-medium"
+        className="rounded bg-black px-6 py-3 font-medium text-white"
       >
         Sign in with GitHub
       </a>

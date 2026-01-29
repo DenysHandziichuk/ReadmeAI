@@ -22,22 +22,21 @@ export async function POST(req: Request) {
         Authorization: `Bearer ${token}`,
         Accept: "application/vnd.github+json",
       },
-    }
+    },
   );
 
   if (!res.ok) {
-  const text = await res.text();
+    const text = await res.text();
 
-  return NextResponse.json(
-    {
-      error: "Failed to fetch branches",
-      status: res.status,
-      details: text,
-    },
-    { status: res.status }
-  );
-}
-
+    return NextResponse.json(
+      {
+        error: "Failed to fetch branches",
+        status: res.status,
+        details: text,
+      },
+      { status: res.status },
+    );
+  }
 
   const data = await res.json();
 

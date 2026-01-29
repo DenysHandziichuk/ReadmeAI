@@ -2,7 +2,7 @@ export async function fetchRepoFileContent(
   owner: string,
   repo: string,
   path: string,
-  token: string
+  token: string,
 ): Promise<string | null> {
   const res = await fetch(
     `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
@@ -11,7 +11,7 @@ export async function fetchRepoFileContent(
         Authorization: `Bearer ${token}`,
         Accept: "application/vnd.github+json",
       },
-    }
+    },
   );
 
   if (!res.ok) return null;

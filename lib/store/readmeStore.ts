@@ -8,7 +8,6 @@ export type StoredReadme = {
 
 const KEY = "mode-b-readme";
 
-
 export function setReadme(data: StoredReadme) {
   if (typeof window === "undefined") return;
   sessionStorage.setItem(KEY, JSON.stringify(data));
@@ -34,7 +33,7 @@ export function clearReadme() {
 
 export function useStoredReadme() {
   const [stored, setStored] = useState<StoredReadme | null | undefined>(
-    undefined
+    undefined,
   );
 
   useEffect(() => {
@@ -44,4 +43,3 @@ export function useStoredReadme() {
 
   return stored;
 }
-

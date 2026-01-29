@@ -16,7 +16,7 @@ export async function POST(req: Request) {
   if (!owner || !repo || !content) {
     return NextResponse.json(
       { error: "Missing owner/repo/content" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
   try {
     const repoRes = await fetch(
       `https://api.github.com/repos/${owner}/${repo}`,
-      { headers }
+      { headers },
     );
 
     const repoData = await repoRes.json();
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
 
     const refRes = await fetch(
       `https://api.github.com/repos/${owner}/${repo}/git/ref/heads/${defaultBranch}`,
-      { headers }
+      { headers },
     );
 
     const refData = await refRes.json();
@@ -58,7 +58,7 @@ export async function POST(req: Request) {
           sha: baseSha,
           credentials: "include",
         }),
-      }
+      },
     );
 
     if (!createBranchRes.ok) {
@@ -69,47 +69,46 @@ export async function POST(req: Request) {
 
     console.log("Branch created:", newBranch);
 
-let existingSha: string | null = null;
+    let existingSha: string | null = null;
 
-const existingRes = await fetch(
-  `https://api.github.com/repos/${owner}/${repo}/contents/README.md?ref=${defaultBranch}`,
-  { headers }
-);
+    const existingRes = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/contents/README.md?ref=${defaultBranch}`,
+      { headers },
+    );
 
-if (existingRes.ok) {
-  const existingData = await existingRes.json();
-  existingSha = existingData.sha;
-  console.log("Existing README SHA:", existingSha);
-}
+    if (existingRes.ok) {
+      const existingData = await existingRes.json();
+      existingSha = existingData.sha;
+      console.log("Existing README SHA:", existingSha);
+    }
 
-const commitPayload: any = {
-  message: "Add generated README (AI)",
-  content: Buffer.from(content).toString("base64"),
-  branch: newBranch,
-};
+    const commitPayload: any = {
+      message: "Add generated README (AI)",
+      content: Buffer.from(content).toString("base64"),
+      branch: newBranch,
+    };
 
-if (existingSha) {
-  commitPayload.sha = existingSha;
-}
+    if (existingSha) {
+      commitPayload.sha = existingSha;
+    }
 
-const commitRes = await fetch(
-  `https://api.github.com/repos/${owner}/${repo}/contents/README.md`,
-  {
-    method: "PUT",
-    headers,
-    body: JSON.stringify(commitPayload),
-    credentials: "include"
-  }
-);
+    const commitRes = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/contents/README.md`,
+      {
+        method: "PUT",
+        headers,
+        body: JSON.stringify(commitPayload),
+        credentials: "include",
+      },
+    );
 
-if (!commitRes.ok) {
-  const err = await commitRes.text();
-  console.error("Commit failed:", err);
-  throw new Error("Commit failed");
-}
+    if (!commitRes.ok) {
+      const err = await commitRes.text();
+      console.error("Commit failed:", err);
+      throw new Error("Commit failed");
+    }
 
-console.log("README committed successfully");
-
+    console.log("README committed successfully");
 
     console.log("README committed to branch");
 
@@ -125,7 +124,7 @@ console.log("README committed successfully");
           base: defaultBranch,
           body: "This PR adds a AI-generated README.",
         }),
-      }
+      },
     );
 
     if (!prRes.ok) {
@@ -145,9 +144,6 @@ console.log("README committed successfully");
   } catch (err) {
     console.error("PR ERROR:", err);
 
-    return NextResponse.json(
-      { error: "Failed to create PR" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to create PR" }, { status: 500 });
   }
 }

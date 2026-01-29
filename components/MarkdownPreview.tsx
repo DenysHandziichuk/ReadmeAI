@@ -6,10 +6,7 @@ import remarkGfm from "remark-gfm";
 export default function MarkdownPreview({ content }: { content: string }) {
   return (
     <article className="markdown-body">
-  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-    {content}
-  </ReactMarkdown>
-</article>
-
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+    </article>
   );
 }

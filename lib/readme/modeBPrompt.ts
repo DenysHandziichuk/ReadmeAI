@@ -3,7 +3,7 @@ export function buildModeBPrompt(
   repo: string,
   displayTitle: string,
   projectType: string,
-  fileContents: Record<string, string>
+  fileContents: Record<string, string>,
 ) {
   return `
 You are a senior developer writing a polished, modern,

@@ -6,7 +6,6 @@ export async function POST(req: Request) {
   const cookieStore = await cookies();
   const token = cookieStore.get("gh_token")?.value;
 
-
   if (!token) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
@@ -20,7 +19,7 @@ export async function POST(req: Request) {
         Authorization: `Bearer ${token}`,
         Accept: "application/vnd.github+json",
       },
-    }
+    },
   );
 
   let sha: string | undefined;
@@ -43,22 +42,17 @@ export async function POST(req: Request) {
         branch,
         ...(sha ? { sha } : {}),
       }),
-    }
+    },
   );
   console.log("Commit payload:", { owner, repo, branch });
 
-
   const text = await commitRes.text();
-console.log("GitHub commit response status:", commitRes.status);
-console.log("GitHub commit response:", text);
+  console.log("GitHub commit response status:", commitRes.status);
+  console.log("GitHub commit response:", text);
 
-if (!commitRes.ok) {
-  return NextResponse.json(
-    { error: text },
-    { status: commitRes.status }
-  );
-}
-
+  if (!commitRes.ok) {
+    return NextResponse.json({ error: text }, { status: commitRes.status });
+  }
 
   return NextResponse.json({ success: true });
 }

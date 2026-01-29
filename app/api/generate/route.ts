@@ -5,6 +5,7 @@ import { fetchRepoFiles } from "@/lib/github/repo-files";
 import { fetchRepoFileContent } from "@/lib/github/repo-content";
 import { selectImportantFiles } from "@/lib/analyzer/select-files";
 import { analyzeRepo } from "@/lib/analyzer";
+import { formatRepoTitle } from "@/lib/readme/formatRepoTitle";
 import { detectProjectType } from "@/lib/analyzer/project-type";
 
 import { groqRewrite } from "@/lib/groq/client";
@@ -39,6 +40,8 @@ export async function POST(req: Request) {
   }
 
   const { owner, repo } = await req.json();
+  const displayTitle = formatRepoTitle(repo);
+
 
   if (!owner || !repo) {
     return NextResponse.json(
@@ -87,7 +90,7 @@ const fileContents: Record<string, string> = {};
     /* 5️⃣ AI generates FULL Mode B README body */
     const aiReadmeBody = await groqRewrite(
       "You output only valid GitHub-flavored Markdown.",
-      buildModeBPrompt(owner, repo, projectType, fileContents)
+      buildModeBPrompt(owner, repo, displayTitle, projectType, fileContents)
     );
 
     /* 6️⃣ Inject badges AFTER title + short intro */

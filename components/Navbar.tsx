@@ -22,10 +22,6 @@ export default function Navbar() {
           <Link href="/dashboard" className="transition hover:text-white">
             Dashboard
           </Link>
-
-          <Link href="/" className="transition hover:text-white">
-            Home
-          </Link>
         </nav>
       </div>
     </header>

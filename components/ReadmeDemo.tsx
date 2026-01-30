@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
 
 const demoMarkdown = `# ⚡ README Generator
 
@@ -74,32 +77,17 @@ export default function ReadmeDemo() {
           >
             {text}
           </motion.pre>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="prose prose-invert max-w-none"
-          >
-            <h1>⚡ README Generator</h1>
-            <p>🚀 Product-style README in seconds.</p>
-
-            <h2>✨ Features</h2>
-            <ul>
-              <li>Clean landing-page structure</li>
-              <li>Badges injected automatically</li>
-              <li>Install + Usage written by AI</li>
-              <li>Commit or Pull Request support</li>
-            </ul>
-
-            <h2>📦 Install</h2>
-            <pre>
-              <code>npm install{"\n"}npm run dev</code>
-            </pre>
-
-            <h2>🚀 Deploy</h2>
-            <p>Push instantly to GitHub with one click.</p>
-          </motion.div>
-        )}
+  ) : (
+    <motion.article
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="markdown-body"
+    >
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+        {text}
+      </ReactMarkdown>
+    </motion.article>
+  )}
       </div>
     </div>
   );

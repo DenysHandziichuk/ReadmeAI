@@ -39,6 +39,21 @@ export function detectFrameworks(files: string[]): string[] {
 
   if (hasExpress) frameworks.add("Express");
 
+  const hasLaravel =
+  files.includes("artisan");
+  if (hasLaravel) {
+    return ["Laravel"]
+  }
+
+    if (files.includes("Dockerfile")) return ["Docker"]
+    
+
+  if (files.includes("docker-compose.yml")) return ["Docker"]
+
+  if (files.includes("nginx.conf")) return ["Nginx"]
+    
+  
+
   const hasNest = files.some((f) => f === "nest-cli.json");
   if (hasNest) frameworks.add("NestJS");
 

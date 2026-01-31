@@ -28,6 +28,10 @@ const BADGES: Record<string, string> = {
   Vue: "![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D)",
   Angular:
     "![Angular](https://img.shields.io/badge/angular-%23DD0031.svg?style=for-the-badge&logo=angular&logoColor=white)",
+  Svelte:
+  "![Svelte](https://img.shields.io/badge/svelte-%23FF3E00.svg?style=for-the-badge&logo=svelte&logoColor=white)",
+  Nuxt:
+  "![NuxtJS](https://img.shields.io/badge/nuxtjs-%2300DC82.svg?style=for-the-badge&logo=nuxtdotjs&logoColor=white)",
 
   // Styling
   TailwindCSS:
@@ -51,6 +55,16 @@ const BADGES: Record<string, string> = {
     "![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)",
   NestJS:
     "![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white)",
+  Spring:
+  "![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)",
+  Laravel:
+  "![Laravel](https://img.shields.io/badge/laravel-%23FF2D20.svg?style=for-the-badge&logo=laravel&logoColor=white)",
+  Fastify:
+  "![Fastify](https://img.shields.io/badge/fastify-000000?style=for-the-badge&logo=fastify&logoColor=white)",
+  Gin:
+  "![Gin](https://img.shields.io/badge/gin-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)",
+  Actix:
+  "![Actix](https://img.shields.io/badge/actix-000000?style=for-the-badge&logo=rust&logoColor=white)",
 
   // package managers
 
@@ -78,6 +92,25 @@ const BADGES: Record<string, string> = {
     "![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white)",
   Redis:
     "![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)",
+  Supabase:
+  "![Supabase](https://img.shields.io/badge/supabase-%233FCF8E.svg?style=for-the-badge&logo=supabase&logoColor=white)",
+  Firebase:
+  "![Firebase](https://img.shields.io/badge/firebase-%23FFCA28.svg?style=for-the-badge&logo=firebase&logoColor=black)",
+
+  // devops
+  Docker:
+  "![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)",
+  Kubernetes:
+  "![Kubernetes](https://img.shields.io/badge/kubernetes-%23326CE5.svg?style=for-the-badge&logo=kubernetes&logoColor=white)",
+  Nginx:
+  "![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)",
+
+  // api/auth tools
+  GraphQL:
+  "![GraphQL](https://img.shields.io/badge/graphql-%23E10098.svg?style=for-the-badge&logo=graphql&logoColor=white)",
+  Prisma:
+  "![Prisma](https://img.shields.io/badge/prisma-%232D3748.svg?style=for-the-badge&logo=prisma&logoColor=white)",
+
 
   // testing
 

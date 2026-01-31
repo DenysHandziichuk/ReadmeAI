@@ -31,11 +31,23 @@ export function detectLanguages(files: string[]): string[] {
     (f) => f.endsWith(".js") || f.endsWith(".jsx"),
   );
 
-  const hasArduino = sourceFiles.some((f) => f.endsWith(".ino"));
-  const hasCpp = sourceFiles.some((f) => f.endsWith(".cpp"));
-  const hasC = sourceFiles.some((f) => f.endsWith(".c"));
-  const hasPy = sourceFiles.some((f) => f.endsWith(".py"));
-  const hasGo = sourceFiles.some((f) => f.endsWith(".go"));
+  const hasArduino = files.some((f) => f.endsWith(".ino"));
+  const hasCpp = files.some((f) => f.endsWith(".cpp"));
+  const hasC = files.some((f) => f.endsWith(".c"));
+  const hasPy = files.some((f) => f.endsWith(".py"));
+  const hasGo =
+  files.some((f) => f.endsWith(".go")) ||
+  files.includes("go.mod");
+  const hasRust =
+  files.includes("Cargo.toml") ||
+  files.includes("Cargo.lock") ||
+  files.some((f) => f.endsWith(".rs"));
+
+  const hasJava =
+  files.some((f) => f.endsWith(".java")) ||
+  files.includes("pom.xml") ||
+  files.includes("build.gradle");
+
 
   if (hasArduino) return ["Arduino", "C++"];
   if (hasCpp) return ["C++"];
@@ -48,6 +60,8 @@ export function detectLanguages(files: string[]): string[] {
     return langs;
   }
 
+  if (hasJava) return ["Java"]
+
   if (hasTs) return ["TypeScript"];
   if (hasJs) {
     const langs: string[] = [];
@@ -59,6 +73,7 @@ export function detectLanguages(files: string[]): string[] {
 
   if (hasPy) return ["Python"];
   if (hasGo) return ["Go"];
+  if (hasRust) return ["Rust"]
 
   return [];
 }

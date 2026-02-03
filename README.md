@@ -8,7 +8,7 @@ ReadmeAI is a Next.js application designed to provide a seamless and efficient e
 ![ESLint](https://img.shields.io/badge/ESLint-4B3263?style=for-the-badge&logo=eslint&logoColor=white)
 ![Prettier](https://img.shields.io/badge/prettier-%23F7B93E.svg?style=for-the-badge&logo=prettier&logoColor=black)
 ![NPM](https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white)
-1
+
 ---
 ## ✨ Key Features
 - 📝 Utilizes Next.js for server-side rendering and static site generation

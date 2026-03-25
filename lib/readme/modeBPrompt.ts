@@ -4,11 +4,21 @@ export function buildModeBPrompt(
   displayTitle: string,
   projectType: string,
   fileContents: Record<string, string>,
+  suggestedInstall: string = "",
+  theme: string = "startup",
 ) {
+  const themeInstructions = {
+    startup: "Heavy on emojis, marketing-focused, catchy headings, and a high-energy tone. Every section heading MUST start with exactly one emoji.",
+    minimal: "Clean, concise, very few emojis, focused strictly on utility and direct information. Maintain a professional and lean tone.",
+    enterprise: "Formal tone, comprehensive sections, detailed documentation, and structured for stability. Avoid excessive emojis, use professional language.",
+  }[theme as "startup" | "minimal" | "enterprise"] || "Standard professional tone.";
+
   return `
 You are a senior developer writing a polished, modern,
 landing-page style GitHub README.
 
+THEME: ${theme.toUpperCase()}
+TONE INSTRUCTIONS: ${themeInstructions}
 
 PROJECT NAME RULE:
 - The project is named: "${displayTitle}"
@@ -51,7 +61,7 @@ STRICT FORMATTING RULES
 - Add a blank line between paragraphs
 - Insert "---" between every major section
 - Do NOT put "---" directly after the title
-- Every section heading (##) must start with exactly ONE emoji
+- Every section heading (##) must start with exactly ONE emoji (if the theme allows it)
 - Feature bullets must start with emojis
 
 Badges:
@@ -105,7 +115,10 @@ Short purpose paragraph
 ---
 
 ## 🧩 Installation & Usage
-Include commands + localhost
+${
+  suggestedInstall ||
+  "Include commands for cloning, installing dependencies, and running the project."
+}
 
 ---
 
@@ -121,6 +134,8 @@ PROJECT INFO
 
 Repo: ${owner}/${repo}
 Detected type: ${projectType}
+Suggested baseline install steps:
+${suggestedInstall}
 
 Relevant source context:
 ${Object.entries(fileContents)

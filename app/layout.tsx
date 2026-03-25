@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "ReadmeAI",
   icons: {
-    icon: "/icon1.png",
+    icon: "/favicon.svg",
   },
 };
 

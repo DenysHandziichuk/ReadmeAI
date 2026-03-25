@@ -40,3 +40,8 @@ npm run dev
 ---
 ## 🛠️ Tech Stack
 ReadmeAI is built using Next.js, React, and Tailwind CSS, providing a fast, scalable, and maintainable architecture 🚀. The application is designed to be highly customizable and extensible, making it easy to add new features and functionality 📈.
+---
+## 📄 License
+This project is licensed under the Apache License - see the [LICENSE](LICENSE) file for details.
+
+![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=for-the-badge)

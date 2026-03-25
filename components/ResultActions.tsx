@@ -9,6 +9,7 @@ import {
   GitBranch,
   CheckCircle,
   GitPullRequest,
+  Shield,
 } from "lucide-react";
 
 export default function ResultActions({
@@ -18,6 +19,9 @@ export default function ResultActions({
   branches,
   branch,
   setBranch,
+  onSuccess,
+  children,
+  onAddLicense,
 }: {
   owner: string;
   repo: string;
@@ -25,14 +29,17 @@ export default function ResultActions({
   branches: string[];
   branch: string;
   setBranch: (b: string) => void;
+  onSuccess?: () => void;
+  children?: React.ReactNode;
+  onAddLicense?: (license: string) => void;
 }) {
   const [mode, setMode] = useState<"commit" | "pr">("commit");
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  /* ======================= */
-  /* ✅ Main Action */
-  /* ======================= */
+  
+  
+  
   async function handleAction() {
     if (mode === "commit" && !branch) {
       toast.error("Select a branch first ❌");
@@ -42,7 +49,7 @@ export default function ResultActions({
     setLoading(true);
 
     try {
-      /* ✅ COMMIT */
+      
       if (mode === "commit") {
         toast.loading("Committing README...", { id: "commit" });
 
@@ -63,9 +70,10 @@ export default function ResultActions({
         toast.success(`Committed to ${branch} ✅`, {
           id: "commit",
         });
+        onSuccess?.();
       }
 
-      /* ✅ PR */
+      
       if (mode === "pr") {
         toast.loading("Creating PR...", { id: "pr" });
 
@@ -87,6 +95,7 @@ export default function ResultActions({
         toast.success("Pull Request created 🎉", {
           id: "pr",
         });
+        onSuccess?.();
 
         window.open(data.prUrl, "_blank");
       }
@@ -97,9 +106,9 @@ export default function ResultActions({
     }
   }
 
-  /* ======================= */
-  /* ✅ Copy */
-  /* ======================= */
+  
+  
+  
   async function copyToClipboard() {
     try {
       await navigator.clipboard.writeText(readme);
@@ -110,120 +119,145 @@ export default function ResultActions({
   }
 
   return (
-    <div className="flex w-full flex-col gap-4">
-      {/* ACTION ROW */}
-      <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
-        {/* Branch Selector */}
-        <div className="flex w-full items-center gap-2 sm:w-auto">
-          <GitBranch size={16} className="shrink-0 text-zinc-500" />
-
-          <select
-            value={branch}
-            disabled={mode !== "commit"}
-            onChange={(e) => setBranch(e.target.value)}
-            className={`w-full rounded-xl border px-3 py-2 text-sm sm:w-[170px] ${
-              mode === "commit"
-                ? "border-zinc-700 bg-zinc-900 text-white"
-                : "cursor-not-allowed border-zinc-800 bg-zinc-950 text-zinc-600"
-            }`}
-          >
-            {branches.length === 0 ? (
-              <option>No branches</option>
-            ) : (
-              branches.map((b) => (
-                <option key={b} value={b}>
-                  {b}
-                </option>
-              ))
-            )}
-          </select>
+    <div className="flex w-full flex-col gap-8">
+      {}
+      <div className="flex w-full flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+        
+        {}
+        <div className="flex-1 overflow-x-auto pb-2 lg:pb-0">
+          <div className="flex flex-col gap-3">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 ml-1">Live Badge Configuration</p>
+            {children}
+          </div>
         </div>
 
-        {/* GitHub */}
-        <a
-          href={`https://github.com/${owner}/${repo}`}
-          target="_blank"
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-700 px-4 py-2 text-sm transition hover:bg-zinc-900 sm:w-auto"
-        >
-          <Github size={16} />
-          GitHub
-        </a>
+        {}
+        <div className="flex flex-wrap items-center gap-4 shrink-0">
+          
+          {}
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <Shield size={12} className="text-zinc-500" />
+              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">License</span>
+            </div>
+            <select
+              onChange={(e) => onAddLicense?.(e.target.value)}
+              className="rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-sm font-medium transition-all hover:border-zinc-700 text-zinc-400"
+              defaultValue=""
+            >
+              <option value="" disabled>Add License</option>
+              <option value="MIT">MIT</option>
+              <option value="Apache">Apache 2.0</option>
+              <option value="GPL">GPLv3</option>
+              <option value="UNLICENSE">Unlicense</option>
+            </select>
+          </div>
 
-        {/* Copy */}
-        <button
-          onClick={copyToClipboard}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-700 px-4 py-2 text-sm transition hover:bg-zinc-900 sm:w-auto"
-        >
-          <Copy size={16} />
-          Copy
-        </button>
+          {}
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <GitBranch size={12} className="text-zinc-500" />
+              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Branch</span>
+            </div>
+            <select
+              value={branch}
+              disabled={mode !== "commit"}
+              onChange={(e) => setBranch(e.target.value)}
+              className={`rounded-xl border px-4 py-3 text-sm font-medium transition-all ${
+                mode === "commit"
+                  ? "border-zinc-700 bg-zinc-900 text-white"
+                  : "cursor-not-allowed border-zinc-800 bg-zinc-950 text-zinc-600"
+              }`}
+            >
+              {branches.length === 0 ? (
+                <option>No branches</option>
+              ) : (
+                branches.map((b) => (
+                  <option key={b} value={b}>
+                    {b}
+                  </option>
+                ))
+              )}
+            </select>
+          </div>
 
-        {/* Main Action */}
-        <button
-          disabled={loading}
-          onClick={() =>
-            mode === "commit" ? setConfirmOpen(true) : handleAction()
-          }
-          className="flex w-full min-w-[160px] items-center justify-center gap-2 rounded-xl bg-green-600 px-6 py-2 font-semibold text-white transition hover:bg-green-700 disabled:opacity-50 sm:w-auto"
-        >
-          {loading && (
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-          )}
+          <div className="h-12 w-px bg-zinc-800/50 hidden sm:block mx-2" />
 
-          {!loading && mode === "commit" && (
-            <>
-              <CheckCircle size={18} />
-              Commit
-            </>
-          )}
+          {}
+          <div className="flex flex-col gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 ml-1">Quick Actions</span>
+            <div className="flex items-center gap-3">
+              <a
+                href={`https://github.com/${owner}/${repo}`}
+                target="_blank"
+                className="flex h-11 items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900 px-5 py-2 text-sm font-semibold text-zinc-300 transition hover:bg-zinc-800 hover:text-white"
+              >
+                <Github size={16} />
+                <span className="hidden sm:inline">GitHub</span>
+              </a>
 
-          {!loading && mode === "pr" && (
-            <>
-              <GitPullRequest size={18} />
-              Create PR
-            </>
-          )}
+              <button
+                onClick={copyToClipboard}
+                className="flex h-11 items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900 px-5 py-2 text-sm font-semibold text-zinc-300 transition hover:bg-zinc-800 hover:text-white"
+              >
+                <Copy size={16} />
+                <span className="hidden sm:inline">Copy</span>
+              </button>
 
-          {loading && (
-            <span>{mode === "commit" ? "Committing..." : "Creating..."}</span>
-          )}
-        </button>
+              {}
+              <div className="flex items-center gap-1 ml-2">
+                <button
+                  disabled={loading}
+                  onClick={() =>
+                    mode === "commit" ? setConfirmOpen(true) : handleAction()
+                  }
+                  className="flex h-11 min-w-[140px] items-center justify-center gap-2 rounded-xl bg-green-600 px-6 py-2 text-sm font-bold text-white transition hover:bg-green-500 disabled:opacity-50 shadow-[0_0_20px_rgba(34,197,94,0.2)]"
+                >
+                  {loading ? (
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                  ) : mode === "commit" ? (
+                    <CheckCircle size={18} />
+                  ) : (
+                    <GitPullRequest size={18} />
+                  )}
+                  {loading ? "..." : mode === "commit" ? "Commit" : "Create PR"}
+                </button>
 
-        {/* Mode Dropdown */}
-        <select
-          value={mode}
-          onChange={(e) => setMode(e.target.value as any)}
-          className="w-full cursor-pointer rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm sm:w-auto"
-        >
-          <option value="commit">Commit</option>
-          <option value="pr">PR</option>
-        </select>
+                <select
+                  value={mode}
+                  onChange={(e) => setMode(e.target.value as any)}
+                  className="flex h-11 cursor-pointer rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-2 text-xs text-zinc-400 outline-none hover:text-white"
+                >
+                  <option value="commit">Commit</option>
+                  <option value="pr">PR</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Confirm Modal */}
+      {}
       {confirmOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
-          <div className="w-full max-w-md space-y-4 rounded-xl border border-zinc-700 bg-zinc-900 p-6">
-            <h2 className="text-lg font-bold">⚠️ Confirm Commit</h2>
-
-            <p className="text-sm text-zinc-400">
-              Overwrite README.md in <b>{branch}</b>?
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4 backdrop-blur-sm">
+          <div className="w-full max-w-md space-y-4 rounded-3xl border border-zinc-800 bg-zinc-900 p-8 shadow-2xl">
+            <h2 className="text-xl font-bold text-white">⚠️ Confirm Changes</h2>
+            <p className="text-sm leading-relaxed text-zinc-400">
+              This will overwrite the README.md file in the <b>{branch}</b> branch. Are you sure you want to proceed?
             </p>
-
-            <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="flex flex-col gap-3 pt-4 sm:flex-row">
               <button
                 onClick={() => setConfirmOpen(false)}
-                className="flex-1 rounded-lg border border-zinc-600 py-2 transition hover:bg-zinc-800"
+                className="flex-1 rounded-xl border border-zinc-700 py-3 text-sm font-bold text-zinc-400 transition hover:bg-zinc-800 hover:text-white"
               >
                 Cancel
               </button>
-
               <button
                 onClick={() => {
                   setConfirmOpen(false);
                   handleAction();
                 }}
-                className="flex-1 rounded-lg bg-green-600 py-2 font-semibold transition hover:bg-green-700"
+                className="flex-1 rounded-xl bg-green-600 py-3 text-sm font-bold text-white transition hover:bg-green-500"
               >
                 Yes, Commit
               </button>

@@ -9,8 +9,10 @@ export async function GET() {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
+  console.log("Fetching repos with token length:", token.length);
+
   const res = await fetch(
-    "https://api.github.com/user/repos?per_page=100&sort=updated",
+    "https://api.github.com/user/repos?per_page=100&sort=updated&affiliation=owner,collaborator,organization_member&visibility=all",
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -20,13 +22,16 @@ export async function GET() {
   );
 
   if (!res.ok) {
+    const errorText = await res.text();
+    console.error("GitHub API error:", res.status, errorText);
     return NextResponse.json(
-      { error: "Failed to fetch repositories" },
+      { error: "Failed to fetch repositories", details: errorText },
       { status: 500 },
     );
   }
 
   const repos = await res.json();
+  console.log(`Fetched ${repos.length} repositories from GitHub`);
 
   const cleaned = repos.map((repo: any) => ({
     name: repo.name,

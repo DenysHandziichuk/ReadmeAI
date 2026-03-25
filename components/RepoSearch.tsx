@@ -12,7 +12,7 @@ export default function RepoSearch({ repos }: { repos: any[] }) {
     repo.name.toLowerCase().includes(query.toLowerCase()),
   );
 
-  /* ✅ Animation Variants */
+  
   const container = {
     hidden: { opacity: 0 },
     show: {

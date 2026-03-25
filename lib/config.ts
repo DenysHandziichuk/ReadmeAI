@@ -1,15 +1,30 @@
-function req(name: string) {
-  const v = process.env[name];
-  if (!v) throw new Error(`Missing env var: ${name}`);
-  return v;
-}
+import { z } from "zod";
 
-export const config = {
+const configSchema = z.object({
+  github: z.object({
+    clientId: z.string(),
+    clientSecret: z.string(),
+  }),
+  app: z.object({
+    baseUrl: z.string().url(),
+  }),
+});
+
+const envConfig = {
   github: {
-    clientId: req("GITHUB_CLIENT_ID"),
-    clientSecret: req("GITHUB_CLIENT_SECRET"),
+    clientId: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
   },
   app: {
     baseUrl: process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000",
   },
 };
+
+const parsed = configSchema.safeParse(envConfig);
+
+if (!parsed.success) {
+  console.error("❌ Invalid environment configuration:", parsed.error.format());
+  throw new Error("Invalid environment configuration");
+}
+
+export const config = parsed.data;

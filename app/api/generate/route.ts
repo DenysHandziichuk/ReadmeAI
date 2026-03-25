@@ -11,6 +11,7 @@ import { detectProjectType } from "@/lib/analyzer/project-type";
 import { groqRewrite } from "@/lib/groq/client";
 import { buildModeBPrompt } from "@/lib/readme/modeBPrompt";
 import { generateBadges } from "@/lib/readme/generateBadges";
+import { generateInstallUsage } from "@/lib/readme/installUsage";
 
 function injectBadgesAfterIntro(readme: string, badges: string) {
   const splitIndex = readme.indexOf("\n\n## ");
@@ -35,7 +36,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const { owner, repo } = await req.json();
+  const { owner, repo, theme = "startup" } = await req.json();
   const displayTitle = formatRepoTitle(repo);
 
   if (!owner || !repo) {
@@ -60,13 +61,15 @@ export async function POST(req: Request) {
       analysis.frameworks,
     );
 
-    for (const path of importantFiles) {
-      const content = await fetchRepoFileContent(owner, repo, path, token);
-
-      if (content && content.length <= 4000) {
-        fileContents[path] = content;
-      }
-    }
+    
+    await Promise.all(
+      importantFiles.map(async (path) => {
+        const content = await fetchRepoFileContent(owner, repo, path, token);
+        if (content && content.length <= 4000) {
+          fileContents[path] = content;
+        }
+      }),
+    );
 
     const tech = [
       ...new Set([
@@ -78,15 +81,26 @@ export async function POST(req: Request) {
     ];
 
     const badges = generateBadges(tech);
+    const repoUrl = `https://github.com/${owner}/${repo}`;
+    const { installation: suggestedInstall } = generateInstallUsage(
+      repoUrl,
+      projectType,
+    );
 
     const aiReadmeBody = await groqRewrite(
       "You output only valid GitHub-flavored Markdown.",
-      buildModeBPrompt(owner, repo, displayTitle, projectType, fileContents),
+      buildModeBPrompt(
+        owner,
+        repo,
+        displayTitle,
+        projectType,
+        fileContents,
+        suggestedInstall,
+        theme,
+      ),
     );
 
     let finalReadme = aiReadmeBody.replace("{{BADGES}}", badges);
-
-    const repoUrl = `https://github.com/${owner}/${repo}`;
 
     finalReadme = finalReadme
       .replace("{{BADGES}}", badges)
@@ -101,6 +115,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       analysis,
       readme: finalReadme,
+      tech,
     });
   } catch (err) {
     console.error("Generate README error:", err);

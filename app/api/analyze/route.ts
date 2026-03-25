@@ -30,12 +30,14 @@ export async function POST(req: Request) {
 
     const fileContents: Record<string, string> = {};
 
-    for (const path of importantFiles) {
-      const content = await fetchRepoFileContent(owner, repo, path, token);
-      if (content && content.length < 4000) {
-        fileContents[path] = content;
-      }
-    }
+    await Promise.all(
+      importantFiles.map(async (path) => {
+        const content = await fetchRepoFileContent(owner, repo, path, token);
+        if (content && content.length < 4000) {
+          fileContents[path] = content;
+        }
+      }),
+    );
 
     const analysis = analyzeRepo(files, fileContents);
 

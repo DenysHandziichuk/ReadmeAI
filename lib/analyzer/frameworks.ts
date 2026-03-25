@@ -71,6 +71,25 @@ export function detectFrameworks(files: string[]): string[] {
   const hasBootstrap = files.some((f) => f.includes("bootstrap"));
   if (hasBootstrap) frameworks.add("Bootstrap");
 
+  if (files.includes("astro.config.mjs") || files.includes("astro.config.js")) {
+    frameworks.add("Astro");
+  }
+
+  const hasSvelte = files.some((f) => f.endsWith(".svelte") || f.includes("svelte.config"));
+  if (hasSvelte) frameworks.add("Svelte");
+
+  if (files.includes("app.json") && files.some(f => f.includes("expo"))) {
+    frameworks.add("Expo");
+  }
+
+  if (files.some(f => f.endsWith(".py") && f.includes("django"))) {
+    frameworks.add("Django");
+  }
+
+  if (files.some(f => f.endsWith(".py") && f.includes("flask"))) {
+    frameworks.add("Flask");
+  }
+
   if (files.includes("platformio.ini")) {
     frameworks.add("PlatformIO");
   }

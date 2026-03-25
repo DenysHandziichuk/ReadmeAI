@@ -7,7 +7,7 @@ export async function GET(req: Request) {
 
     if (!code) {
       console.error("No code in callback");
-      return NextResponse.redirect("/login");
+      return NextResponse.redirect(`${config.app.baseUrl}/login`);
     }
 
     console.log("OAuth code received");
@@ -35,7 +35,7 @@ export async function GET(req: Request) {
       return NextResponse.json(data, { status: 400 });
     }
 
-    const res = NextResponse.redirect(new URL("/dashboard", req.url));
+    const res = NextResponse.redirect(`${config.app.baseUrl}/dashboard`);
     res.cookies.set("gh_token", data.access_token, {
       httpOnly: true,
       sameSite: "lax",

@@ -1,5 +1,6 @@
 export function generateInstallUsage(repoUrl: string, projectType: string) {
-  if (projectType === "frontend") {
+  if (projectType === "frontend" || projectType === "node") {
+    const runCmd = projectType === "frontend" ? "npm run dev" : "npm start";
     return {
       installation: `
 ## 🧩 Installation & Usage
@@ -8,12 +9,52 @@ export function generateInstallUsage(repoUrl: string, projectType: string) {
 git clone ${repoUrl}
 cd {{REPO_NAME}}
 npm install
-npm run dev
+${runCmd}
 \`\`\`
+`,
+    };
+  }
 
-Then open:
+  if (projectType === "rust") {
+    return {
+      installation: `
+## 🧩 Installation & Usage
 
-http://localhost:{{PORT}}
+\`\`\`bash
+git clone ${repoUrl}
+cd {{REPO_NAME}}
+cargo build --release
+cargo run
+\`\`\`
+`,
+    };
+  }
+
+  if (projectType === "go") {
+    return {
+      installation: `
+## 🧩 Installation & Usage
+
+\`\`\`bash
+git clone ${repoUrl}
+cd {{REPO_NAME}}
+go build -o app
+./app
+\`\`\`
+`,
+    };
+  }
+
+  if (projectType === "static") {
+    return {
+      installation: `
+## 🧩 Installation & Usage
+
+Just open \`index.html\` in your browser or use a local server:
+
+\`\`\`bash
+npx live-server
+\`\`\`
 `,
     };
   }
@@ -33,22 +74,6 @@ venv\\Scripts\\activate    # Windows
 
 pip install -r requirements.txt
 python main.py
-\`\`\`
-`,
-    };
-  }
-
-  if (projectType === "c") {
-    return {
-      installation: `
-## 🧩 Installation & Usage
-
-\`\`\`bash
-git clone ${repoUrl}
-cd {{REPO_NAME}}
-
-gcc main.c -o app
-./app
 \`\`\`
 `,
     };

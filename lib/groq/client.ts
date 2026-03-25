@@ -29,3 +29,31 @@ export async function groqRewrite(
   const data = await res.json();
   return data.choices[0].message.content;
 }
+
+export async function groqStream(
+  systemPrompt: string,
+  userPrompt: string,
+) {
+  const res = await fetch(GROQ_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: "llama-3.3-70b-versatile",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+      temperature: 0.3,
+      stream: true,
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error("Groq streaming failed");
+  }
+
+  return res.body; 
+}

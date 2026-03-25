@@ -2,6 +2,9 @@ import { cookies } from "next/headers";
 import RepoSearch from "@/components/RepoSearch";
 import PageTransition from "@/components/PageTransition";
 import { redirect } from "next/navigation";
+import HistoryList from "@/components/HistoryList";
+
+import { config } from "@/lib/config";
 
 export default async function DashboardPage() {
   const cookieStore = await cookies();
@@ -15,7 +18,7 @@ export default async function DashboardPage() {
     );
   }
 
-  const res = await fetch("http://localhost:3000/api/github/repos", {
+  const res = await fetch(`${config.app.baseUrl}/api/github/repos`, {
     headers: {
       Cookie: `gh_token=${token}`,
     },
@@ -44,6 +47,10 @@ export default async function DashboardPage() {
           </div>
 
           <RepoSearch repos={repos} />
+
+          <div className="pt-10 border-t border-zinc-900">
+            <HistoryList />
+          </div>
         </div>
       </main>
     </PageTransition>

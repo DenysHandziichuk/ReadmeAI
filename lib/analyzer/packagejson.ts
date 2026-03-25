@@ -37,6 +37,23 @@ export function detectFromPackageJson(pkgRaw: string) {
     if (deps["@supabase/supabase-js"])
       tech.push("Supabase");
     
+    
+    if (deps.redux || deps["@reduxjs/toolkit"]) tech.push("Redux");
+    if (deps.zustand) tech.push("Zustand");
+    if (deps.jotai) tech.push("Jotai");
+    if (deps.pinia) tech.push("Pinia");
+    if (deps.vuex) tech.push("Vuex");
+
+    
+    if (deps["next-auth"] || deps["@auth/core"]) tech.push("NextAuth.js");
+    if (deps["@clerk/nextjs"]) tech.push("Clerk");
+    if (deps["@auth0/auth0-react"]) tech.push("Auth0");
+
+    
+    if (deps.axios) tech.push("Axios");
+    if (deps.zod) tech.push("Zod");
+    if (deps.trpc || deps["@trpc/client"]) tech.push("tRPC");
+    if (deps["@tanstack/react-query"]) tech.push("React Query");
 
     return tech;
   } catch {

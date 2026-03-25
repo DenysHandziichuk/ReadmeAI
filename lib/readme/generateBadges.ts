@@ -1,133 +1,114 @@
-import React from "react";
+import { BadgeStyle } from "../store/readmeStore";
 
-const BADGES: Record<string, string> = {
-  // languages
-  JavaScript:
-    "![JavaScript](https://img.shields.io/badge/javascript-%23F7DF1E.svg?style=for-the-badge&logo=javascript&logoColor=black)",
-  TypeScript:
-    "![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)",
-  Python:
-    "![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)",
-  Html: "![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)",
-  Css: "![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)",
-  C: "![C](https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white)",
-  "C++":
-    "![C++](https://img.shields.io/badge/c++-%2300599C.svg?style=for-the-badge&logo=c%2B%2B&logoColor=white)",
-  Go: "![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)",
-  Rust: "![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)",
-  Java: "![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)",
-  Php: "![PHP](https://img.shields.io/badge/php-%23777BB4.svg?style=for-the-badge&logo=php&logoColor=white)",
-  "C#": "![C#](https://img.shields.io/badge/c%23-%23239120.svg?style=for-the-badge&logo=csharp&logoColor=white)",
+export const BADGES_BASE: Record<string, string> = {
+  
+  JavaScript: "javascript-%23F7DF1E.svg?logo=javascript&logoColor=black",
+  TypeScript: "typescript-%23007ACC.svg?logo=typescript&logoColor=white",
+  Python: "python-3670A0?logo=python&logoColor=ffdd54",
+  Html: "html5-%23E34F26.svg?logo=html5&logoColor=white",
+  Css: "css3-%231572B6.svg?logo=css3&logoColor=white",
+  C: "c-%2300599C.svg?logo=c&logoColor=white",
+  "C++": "c++-%2300599C.svg?logo=c%2B%2B&logoColor=white",
+  Go: "go-%2300ADD8.svg?logo=go&logoColor=white",
+  Rust: "rust-%23000000.svg?logo=rust&logoColor=white",
+  Java: "java-%23ED8B00.svg?logo=openjdk&logoColor=white",
+  Php: "php-%23777BB4.svg?logo=php&logoColor=white",
+  "C#": "c%23-%23239120.svg?logo=csharp&logoColor=white",
 
-  // frontend frameworks
+  
+  React: "react-%2361DAFB.svg?logo=react&logoColor=black",
+  NextJS: "Next-black?logo=next.js&logoColor=white",
+  Vue: "vuejs-%2335495e.svg?logo=vuedotjs&logoColor=%234FC08D",
+  Angular: "angular-%23DD0031.svg?logo=angular&logoColor=white",
+  Svelte: "svelte-%23FF3E00.svg?logo=svelte&logoColor=white",
+  Nuxt: "nuxtjs-%2300DC82.svg?logo=nuxtdotjs&logoColor=white",
+  Astro: "astro-%23ff5d01.svg?logo=astro&logoColor=white",
 
-  React:
-    "![React](https://img.shields.io/badge/react-%2361DAFB.svg?style=for-the-badge&logo=react&logoColor=black)",
-  NextJS:
-    "![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)",
-  Vue: "![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D)",
-  Angular:
-    "![Angular](https://img.shields.io/badge/angular-%23DD0031.svg?style=for-the-badge&logo=angular&logoColor=white)",
-  Svelte:
-  "![Svelte](https://img.shields.io/badge/svelte-%23FF3E00.svg?style=for-the-badge&logo=svelte&logoColor=white)",
-  Nuxt:
-  "![NuxtJS](https://img.shields.io/badge/nuxtjs-%2300DC82.svg?style=for-the-badge&logo=nuxtdotjs&logoColor=white)",
+  
+  TailwindCSS: "tailwindcss-%2338B2AC.svg?logo=tailwind-css&logoColor=white",
+  Bootstrap: "bootstrap-%238511FA.svg?logo=bootstrap&logoColor=white",
 
-  // Styling
-  TailwindCSS:
-    "![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)",
-  Bootstrap:
-    "![Bootstrap](https://img.shields.io/badge/bootstrap-%238511FA.svg?style=for-the-badge&logo=bootstrap&logoColor=white)",
+  
+  Node: "node.js-6DA55F?logo=node.js&logoColor=white",
+  Deno: "deno%20js-000000?logo=deno&logoColor=white",
+  Bun: "Bun-%23000000.svg?logo=bun&logoColor=white",
 
-  // backend /runtimes
-  Node: "![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)",
-  Deno: "![Deno JS](https://img.shields.io/badge/deno%20js-000000?style=for-the-badge&logo=deno&logoColor=white)",
-  Bun: "![Bun](https://img.shields.io/badge/Bun-%23000000.svg?style=for-the-badge&logo=bun&logoColor=white)",
+  
+  Express: "express.js-%23404d59.svg?logo=express&logoColor=%2361DAFB",
+  FastAPI: "FastAPI-005571?logo=fastapi",
+  Django: "django-%23092E20.svg?logo=django&logoColor=white",
+  Flask: "flask-%23000.svg?logo=flask&logoColor=white",
+  NestJS: "nestjs-%23E0234E.svg?logo=nestjs&logoColor=white",
+  Spring: "spring-%236DB33F.svg?logo=spring&logoColor=white",
+  Laravel: "laravel-%23FF2D20.svg?logo=laravel&logoColor=white",
+  Fastify: "fastify-000000?logo=fastify&logoColor=white",
+  Gin: "gin-%2300ADD8.svg?logo=go&logoColor=white",
+  Actix: "actix-000000?logo=rust&logoColor=white",
 
-  // backend frameworks
-  Express:
-    "![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)",
-  FastAPI:
-    "![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)",
-  Django:
-    "![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white)",
-  Flask:
-    "![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)",
-  NestJS:
-    "![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white)",
-  Spring:
-  "![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)",
-  Laravel:
-  "![Laravel](https://img.shields.io/badge/laravel-%23FF2D20.svg?style=for-the-badge&logo=laravel&logoColor=white)",
-  Fastify:
-  "![Fastify](https://img.shields.io/badge/fastify-000000?style=for-the-badge&logo=fastify&logoColor=white)",
-  Gin:
-  "![Gin](https://img.shields.io/badge/gin-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)",
-  Actix:
-  "![Actix](https://img.shields.io/badge/actix-000000?style=for-the-badge&logo=rust&logoColor=white)",
+  
+  Redux: "redux-%23593d88.svg?logo=redux&logoColor=white",
+  Zustand: "zustand-%2320232a.svg?logo=react&logoColor=white",
+  Pinia: "pinia-%23ae9142.svg?logo=pinia&logoColor=white",
 
-  // package managers
+  
+  npm: "NPM-%23CB3837.svg?logo=npm&logoColor=white",
+  pnpm: "pnpm-%234a4a4a.svg?logo=pnpm&logoColor=f69220",
+  yarn: "yarn-%232C8EBB.svg?logo=yarn&logoColor=white",
+  Vite: "vite-%23646CFF.svg?logo=vite&logoColor=white",
+  Webpack: "webpack-%238DD6F9.svg?logo=webpack&logoColor=black",
 
-  npm: "![NPM](https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white)",
-  pnpm: "![PNPM](https://img.shields.io/badge/pnpm-%234a4a4a.svg?style=for-the-badge&logo=pnpm&logoColor=f69220)",
-  yarn: "![Yarn](https://img.shields.io/badge/yarn-%232C8EBB.svg?style=for-the-badge&logo=yarn&logoColor=white)",
-  Vite: "![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)",
-  Webpack:
-    "![Webpack](https://img.shields.io/badge/webpack-%238DD6F9.svg?style=for-the-badge&logo=webpack&logoColor=black)",
+  
+  PostgreSQL: "postgres-%23316192.svg?logo=postgresql&logoColor=white",
+  MySQL: "mysql-4479A1.svg?logo=mysql&logoColor=white",
+  MongoDB: "MongoDB-%234ea94b.svg?logo=mongodb&logoColor=white",
+  SQLite: "sqlite-%2307405e.svg?logo=sqlite&logoColor=white",
+  Redis: "redis-%23DD0031.svg?logo=redis&logoColor=white",
+  Supabase: "supabase-%233FCF8E.svg?logo=supabase&logoColor=white",
+  Firebase: "firebase-%23FFCA28.svg?logo=firebase&logoColor=black",
+  Prisma: "prisma-%232D3748.svg?logo=prisma&logoColor=white",
 
-  // embedded
-  Arduino:
-    "![Arduino](https://img.shields.io/badge/-Arduino-00979D?style=for-the-badge&logo=Arduino&logoColor=white)",
-  PlatformIO:
-    "![PlatformIO](https://img.shields.io/badge/PlatformIO-%23222.svg?style=for-the-badge&logo=platformio&logoColor=%23f5822a)",
+  
+  Docker: "docker-%230db7ed.svg?logo=docker&logoColor=white",
+  Kubernetes: "kubernetes-%23326CE5.svg?logo=kubernetes&logoColor=white",
+  Nginx: "nginx-%23009639.svg?logo=nginx&logoColor=white",
+  Vercel: "vercel-%23000000.svg?logo=vercel&logoColor=white",
+  Netlify: "netlify-%2300C7B7.svg?logo=netlify&logoColor=white",
+  "GitHub Actions": "github%20actions-%232671E5.svg?logo=githubactions&logoColor=white",
 
-  // databases
-  PostgreSQL:
-    "![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)",
-  MySQL:
-    "![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)",
-  MongoDB:
-    "![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)",
-  SQLite:
-    "![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white)",
-  Redis:
-    "![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)",
-  Supabase:
-  "![Supabase](https://img.shields.io/badge/supabase-%233FCF8E.svg?style=for-the-badge&logo=supabase&logoColor=white)",
-  Firebase:
-  "![Firebase](https://img.shields.io/badge/firebase-%23FFCA28.svg?style=for-the-badge&logo=firebase&logoColor=black)",
+  
+  "NextAuth.js": "nextauth.js-%23000000.svg?logo=next.js&logoColor=white",
+  Clerk: "clerk-%236C47FF.svg?logo=clerk&logoColor=white",
+  Auth0: "auth0-%23EB5424.svg?logo=auth0&logoColor=white",
 
-  // devops
-  Docker:
-  "![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)",
-  Kubernetes:
-  "![Kubernetes](https://img.shields.io/badge/kubernetes-%23326CE5.svg?style=for-the-badge&logo=kubernetes&logoColor=white)",
-  Nginx:
-  "![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)",
+  
+  Jest: "-jest-%23C21325?logo=jest&logoColor=white",
+  Vitest: "-Vitest-252529?logo=vitest&logoColor=FCC72B",
+  Playwright: "-playwright-%232EAD33?logo=playwright&logoColor=white",
+  ESLint: "ESLint-4B3263?logo=eslint&logoColor=white",
+  Prettier: "prettier-%23F7B93E.svg?logo=prettier&logoColor=black",
 
-  // api/auth tools
-  GraphQL:
-  "![GraphQL](https://img.shields.io/badge/graphql-%23E10098.svg?style=for-the-badge&logo=graphql&logoColor=white)",
-  Prisma:
-  "![Prisma](https://img.shields.io/badge/prisma-%232D3748.svg?style=for-the-badge&logo=prisma&logoColor=white)",
+  
+  Husky: "husky-%23000000.svg?logo=husky&logoColor=white",
+  Axios: "axios-%235A29E4.svg?logo=axios&logoColor=white",
+  Zod: "zod-%233E67B1.svg?logo=zod&logoColor=white",
+  tRPC: "trpc-%232596be.svg?logo=trpc&logoColor=white",
+  "React Query": "-react%20query-FF4154?logo=react-query&logoColor=white",
 
-
-  // testing
-
-  Jest: "![Jest](https://img.shields.io/badge/-jest-%23C21325?style=for-the-badge&logo=jest&logoColor=white)",
-  Vitest:
-    "![Vitest](https://img.shields.io/badge/-Vitest-252529?style=for-the-badge&logo=vitest&logoColor=FCC72B)",
-  Playwright:
-    "![Playwright](https://img.shields.io/badge/-playwright-%232EAD33?style=for-the-badge&logo=playwright&logoColor=white)",
-  ESLint:
-    "![ESLint](https://img.shields.io/badge/ESLint-4B3263?style=for-the-badge&logo=eslint&logoColor=white)",
-  Prettier:
-    "![Prettier](https://img.shields.io/badge/prettier-%23F7B93E.svg?style=for-the-badge&logo=prettier&logoColor=black)",
+  
+  MIT: "License-MIT-yellow.svg",
+  Apache: "License-Apache%202.0-blue.svg",
+  GPL: "License-GPLv3-blue.svg",
+  UNLICENSE: "License-Unlicense-blue.svg",
 };
 
-export function generateBadges(tech: string[]) {
+export function generateBadges(tech: string[], style: BadgeStyle = "for-the-badge") {
   return tech
-    .map((t) => BADGES[t])
+    .map((t) => {
+      const base = BADGES_BASE[t];
+      if (!base) return null;
+      const url = `https://img.shields.io/badge/${base}${base.includes("?") ? "&" : "?"}style=${style}`;
+      return `![${t}](${url})`;
+    })
     .filter(Boolean)
     .join("\n");
 }

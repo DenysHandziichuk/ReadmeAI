@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import PageTransition from "@/components/PageTransition";
 import { motion } from "framer-motion";
 
-import { setReadme } from "@/lib/store/readmeStore";
+import { setReadme, Theme } from "@/lib/store/readmeStore";
 
 export default function RepoClient({
   owner,
@@ -19,6 +19,7 @@ export default function RepoClient({
   const [loading, setLoading] = useState(false);
   const [branches, setBranches] = useState<string[]>([]);
   const [selectedBranch, setSelectedBranch] = useState("");
+  const [theme, setTheme] = useState<Theme>("startup");
 
   const router = useRouter();
 
@@ -55,7 +56,7 @@ export default function RepoClient({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ owner, repo }),
+        body: JSON.stringify({ owner, repo, theme }),
       });
 
       if (!res.ok) throw new Error();
@@ -66,6 +67,8 @@ export default function RepoClient({
         owner,
         repo,
         content: data.readme,
+        tech: data.tech,
+        theme,
       });
 
       toast.success("README ready 🎉", { id: "gen" });
@@ -99,23 +102,53 @@ export default function RepoClient({
             </p>
           </div>
 
-          <motion.div
-            whileHover={{ scale: 1.01 }}
-            className="space-y-3 rounded-2xl border border-zinc-800 bg-zinc-950 p-6 shadow-xl"
-          >
-            <p className="text-sm text-zinc-500">Selected repository</p>
+          <div className="grid gap-6 md:grid-cols-2">
+            <motion.div
+              whileHover={{ scale: 1.01 }}
+              className="space-y-3 rounded-2xl border border-zinc-800 bg-zinc-950 p-6 shadow-xl"
+            >
+              <p className="text-xs font-bold uppercase tracking-widest text-zinc-500">Repository</p>
 
-            <h2 className="text-2xl font-semibold">
-              {owner}/{repo}
-            </h2>
+              <h2 className="text-2xl font-semibold">
+                {owner}/{repo}
+              </h2>
 
-            {branches.length > 0 && (
-              <p className="text-sm text-zinc-400">
-                Default branch:{" "}
-                <span className="font-medium text-white">{selectedBranch}</span>
+              {branches.length > 0 && (
+                <p className="text-sm text-zinc-400">
+                  Default branch:{" "}
+                  <span className="font-medium text-white">{selectedBranch}</span>
+                </p>
+              )}
+            </motion.div>
+
+            <motion.div
+              whileHover={{ scale: 1.01 }}
+              className="space-y-4 rounded-2xl border border-zinc-800 bg-zinc-950 p-6 shadow-xl"
+            >
+              <p className="text-xs font-bold uppercase tracking-widest text-zinc-500">Select Theme</p>
+              
+              <div className="grid grid-cols-3 gap-2">
+                {(["startup", "minimal", "enterprise"] as Theme[]).map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => setTheme(t)}
+                    className={`rounded-xl border py-3 text-xs font-semibold capitalize transition-all ${
+                      theme === t
+                        ? "border-green-500 bg-green-500/10 text-green-400"
+                        : "border-zinc-800 bg-zinc-900 text-zinc-500 hover:border-zinc-700 hover:text-zinc-300"
+                    }`}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+              <p className="text-[10px] text-zinc-500 leading-relaxed">
+                {theme === "startup" && "High energy, emojis, and marketing focused."}
+                {theme === "minimal" && "Concise, clean, and utility-driven."}
+                {theme === "enterprise" && "Professional, detailed, and stable tone."}
               </p>
-            )}
-          </motion.div>
+            </motion.div>
+          </div>
 
           <div className="flex flex-col gap-4 sm:flex-row">
             <motion.button

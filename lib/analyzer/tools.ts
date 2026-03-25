@@ -40,5 +40,21 @@ export function detectTools(files: string[]): string[] {
 
   if (hasPrettier) tools.add("Prettier");
 
+  if (files.some(f => f.startsWith(".github/workflows/"))) {
+    tools.add("GitHub Actions");
+  }
+
+  if (files.some(f => f === "vercel.json" || f.startsWith(".vercel"))) {
+    tools.add("Vercel");
+  }
+
+  if (files.some(f => f === "netlify.toml" || f.startsWith(".netlify"))) {
+    tools.add("Netlify");
+  }
+
+  if (files.some(f => f === ".husky/")) {
+    tools.add("Husky");
+  }
+
   return Array.from(tools);
 }

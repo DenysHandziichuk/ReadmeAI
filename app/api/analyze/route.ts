@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     await Promise.all(
       importantFiles.map(async (path) => {
         const content = await fetchRepoFileContent(owner, repo, path, token);
-        if (content && content.length < 4000) {
+        if (content && content.length <= 8000) {
           fileContents[path] = content;
         }
       }),

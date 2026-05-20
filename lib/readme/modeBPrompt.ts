@@ -1,3 +1,5 @@
+import { type ProjectMetadata } from "@/lib/analyzer";
+
 export function buildModeBPrompt(
   owner: string,
   repo: string,
@@ -6,12 +8,36 @@ export function buildModeBPrompt(
   fileContents: Record<string, string>,
   suggestedInstall: string = "",
   theme: string = "startup",
+  analysis?: ProjectMetadata,
 ) {
   const themeInstructions = {
     startup: "Heavy on emojis, marketing-focused, catchy headings, and a high-energy tone. Every section heading MUST start with exactly one emoji.",
     minimal: "Clean, concise, very few emojis, focused strictly on utility and direct information. Maintain a professional and lean tone.",
     enterprise: "Formal tone, comprehensive sections, detailed documentation, and structured for stability. Avoid excessive emojis, use professional language.",
   }[theme as "startup" | "minimal" | "enterprise"] || "Standard professional tone.";
+
+  const analysisSection = analysis ? `
+=============================
+DETECTED PROJECT ANALYSIS
+=============================
+
+Languages: ${analysis.languages.join(", ")}
+Frameworks: ${analysis.frameworks.join(", ")}
+Tools: ${analysis.tools.join(", ")}
+Package Manager: ${analysis.packageManager || "None detected"}
+Databases: ${analysis.databases.join(", ") || "None detected"}
+Project Type: ${analysis.projectType}
+Has Docker: ${analysis.hasDocker ? "Yes" : "No"}
+Has CI/CD: ${analysis.hasCI ? "CI" : ""}${analysis.hasCD ? "/CD" : ""}
+License: ${analysis.license || "Not detected"}
+
+IMPORTANT: Use the analysis above to write an accurate and specific README.
+- If frameworks are detected, mention them by name in the Tech Stack section
+- If databases are detected, mention the database technology used
+- If Docker is detected, mention containerization in the setup
+- If CI/CD is detected, mention the automation pipeline
+- Use the project type to determine the correct installation steps
+` : "";
 
   return `
 You are a senior developer writing a polished, modern,
@@ -34,14 +60,14 @@ WORKFLOW RULES:
 - Do NOT include: git clone, npm, yarn, localhost
 - Use a numbered list with as many steps as needed (3–7 typical)
 - Steps should describe the UI flow, for example:
-  - Open the app
-  - Paste input or select a repo
-  - Adjust settings
-  - Generate the output
-  - Copy/export/publish results
+- Open the app
+- Paste input or select a repo
+- Adjust settings
+- Generate the output
+- Copy/export/publish results
 
 
-  FORBIDDEN IN WORKFLOW SECTION:
+FORBIDDEN IN WORKFLOW SECTION:
 - git clone
 - npm install
 - yarn
@@ -125,6 +151,7 @@ ${
 ## 🛠️ Tech Stack
 ONLY 1–2 sentence summary, no lists, no badge repeats
 
+${analysisSection}
 
 ==============================
 PROJECT INFO
@@ -140,7 +167,7 @@ ${suggestedInstall}
 Relevant source context:
 ${Object.entries(fileContents)
   .map(([path, content]) => {
-    return `--- FILE: ${path} ---\n${content.slice(0, 1200)}\n`;
+    return `--- FILE: ${path} ---\n${content.slice(0, 2000)}\n`;
   })
   .join("\n")}
 

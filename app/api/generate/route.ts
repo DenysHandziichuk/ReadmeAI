@@ -6,29 +6,13 @@ import { fetchRepoFileContent } from "@/lib/github/repo-content";
 import { selectImportantFiles } from "@/lib/analyzer/select-files";
 import { analyzeRepo } from "@/lib/analyzer";
 import { formatRepoTitle } from "@/lib/readme/formatRepoTitle";
-import { detectProjectType } from "@/lib/analyzer/project-type";
 
-import { groqRewrite } from "@/lib/groq/client";
+import { nvidiaRewrite } from "@/lib/nvidia/client";
 import { buildModeBPrompt } from "@/lib/readme/modeBPrompt";
 import { generateBadges } from "@/lib/readme/generateBadges";
 import { generateInstallUsage } from "@/lib/readme/installUsage";
 
-function injectBadgesAfterIntro(readme: string, badges: string) {
-  const splitIndex = readme.indexOf("\n\n## ");
-
-  if (splitIndex === -1) {
-    return `${readme}\n\n${badges}`;
-  }
-
-  const intro = readme.slice(0, splitIndex);
-  const rest = readme.slice(splitIndex);
-
-  return `${intro}\n\n${badges}\n\n${rest}`;
-}
-
 export async function POST(req: Request) {
-  console.log("🔥 GENERATE MODE B HIT");
-
   const cookieStore = await cookies();
   const token = cookieStore.get("gh_token")?.value;
 
@@ -53,30 +37,24 @@ export async function POST(req: Request) {
 
     const fileContents: Record<string, string> = {};
 
-    const analysis = analyzeRepo(files, fileContents);
-
-    const projectType = detectProjectType(
-      files,
-      analysis.languages,
-      analysis.frameworks,
-    );
-
-    
     await Promise.all(
       importantFiles.map(async (path) => {
         const content = await fetchRepoFileContent(owner, repo, path, token);
-        if (content && content.length <= 4000) {
+        if (content && content.length <= 8000) {
           fileContents[path] = content;
         }
       }),
     );
 
+    const fullAnalysis = analyzeRepo(files, fileContents);
+
     const tech = [
       ...new Set([
-        ...analysis.languages,
-        ...analysis.frameworks,
-        ...(analysis.tools || []),
-        ...(analysis.packageManager ? [analysis.packageManager] : []),
+        ...fullAnalysis.languages,
+        ...fullAnalysis.frameworks,
+        ...(fullAnalysis.tools || []),
+        ...(fullAnalysis.packageManager ? [fullAnalysis.packageManager] : []),
+        ...fullAnalysis.databases,
       ]),
     ];
 
@@ -84,19 +62,21 @@ export async function POST(req: Request) {
     const repoUrl = `https://github.com/${owner}/${repo}`;
     const { installation: suggestedInstall } = generateInstallUsage(
       repoUrl,
-      projectType,
+      fullAnalysis.projectType,
+      fullAnalysis.packageManager,
     );
 
-    const aiReadmeBody = await groqRewrite(
+    const aiReadmeBody = await nvidiaRewrite(
       "You output only valid GitHub-flavored Markdown.",
       buildModeBPrompt(
         owner,
         repo,
         displayTitle,
-        projectType,
+        fullAnalysis.projectType,
         fileContents,
         suggestedInstall,
         theme,
+        fullAnalysis,
       ),
     );
 
@@ -113,7 +93,7 @@ export async function POST(req: Request) {
     finalReadme = finalReadme.replaceAll("{{REPO_NAME}}", repo);
 
     return NextResponse.json({
-      analysis,
+      analysis: fullAnalysis,
       readme: finalReadme,
       tech,
     });

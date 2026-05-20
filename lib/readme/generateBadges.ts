@@ -94,7 +94,27 @@ export const BADGES_BASE: Record<string, string> = {
   tRPC: "trpc-%232596be.svg?logo=trpc&logoColor=white",
   "React Query": "-react%20query-FF4154?logo=react-query&logoColor=white",
 
-  
+  SQLAlchemy: "sqlalchemy-%23333333.svg?logo=sqlalchemy&logoColor=white",
+  Drizzle: "drizzle-%23000000.svg",
+  TypeORM: "typeorm-%23333333.svg",
+  Mongoose: "mongoose-%2380000.svg?logo=mongoose&logoColor=white",
+  MariaDB: "mariadb-%23003145.svg?logo=mariadb&logoColor=white",
+  ClickHouse: "clickhouse-%23FFCC00.svg?logo=clickhouse&logoColor=white",
+  InfluxDB: "influxdb-%2322ADF6.svg?logo=influxdb&logoColor=white",
+  Cassandra: "cassandra-%231287B1.svg?logo=apachecassandra&logoColor=white",
+
+  "Actix Web": "actix-%23000000.svg?logo=rust&logoColor=white",
+  Axum: "axum-%23000000.svg?logo=rust&logoColor=white",
+  Rocket: "rocket-%23B52759.svg?logo=rust&logoColor=white",
+  Rails: "rails-%23CC0000.svg?logo=rubyonrails&logoColor=white",
+  Kotlin: "kotlin-%237F52FF.svg?logo=kotlin&logoColor=white",
+  Dart: "dart-%230175C2.svg?logo=dart&logoColor=white",
+  Flutter: "flutter-%2302569B.svg?logo=flutter&logoColor=white",
+  Expo: "expo-%23000020.svg?logo=expo&logoColor=white",
+  "shadcn/ui": "shadcn%2Fui-%23000000.svg",
+  Stripe: "stripe-%23635BFF.svg?logo=stripe&logoColor=white",
+  Sentry: "sentry-%2336206E.svg?logo=sentry&logoColor=white",
+
   MIT: "License-MIT-yellow.svg",
   Apache: "License-Apache%202.0-blue.svg",
   GPL: "License-GPLv3-blue.svg",

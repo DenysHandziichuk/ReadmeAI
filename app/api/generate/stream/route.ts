@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
 import { fetchRepoFiles } from "@/lib/github/repo-files";
@@ -6,11 +5,9 @@ import { fetchRepoFileContent } from "@/lib/github/repo-content";
 import { selectImportantFiles } from "@/lib/analyzer/select-files";
 import { analyzeRepo } from "@/lib/analyzer";
 import { formatRepoTitle } from "@/lib/readme/formatRepoTitle";
-import { detectProjectType } from "@/lib/analyzer/project-type";
 
-import { groqStream } from "@/lib/groq/client";
+import { nvidiaStream } from "@/lib/nvidia/client";
 import { buildModeBPrompt } from "@/lib/readme/modeBPrompt";
-import { generateBadges } from "@/lib/readme/generateBadges";
 import { generateInstallUsage } from "@/lib/readme/installUsage";
 
 export async function POST(req: Request) {
@@ -29,49 +26,55 @@ export async function POST(req: Request) {
     const importantFiles = selectImportantFiles(files);
     const fileContents: Record<string, string> = {};
 
-    const analysis = analyzeRepo(files, fileContents);
-    const projectType = detectProjectType(files, analysis.languages, analysis.frameworks);
-
     await Promise.all(
       importantFiles.map(async (path) => {
         const content = await fetchRepoFileContent(owner, repo, path, token);
-        if (content && content.length <= 4000) {
+        if (content && content.length <= 8000) {
           fileContents[path] = content;
         }
-      })
+      }),
     );
+
+    const fullAnalysis = analyzeRepo(files, fileContents);
 
     const tech = [
       ...new Set([
-        ...analysis.languages,
-        ...analysis.frameworks,
-        ...(analysis.tools || []),
-        ...(analysis.packageManager ? [analysis.packageManager] : []),
+        ...fullAnalysis.languages,
+        ...fullAnalysis.frameworks,
+        ...(fullAnalysis.tools || []),
+        ...(fullAnalysis.packageManager ? [fullAnalysis.packageManager] : []),
+        ...fullAnalysis.databases,
       ]),
     ];
 
-    const badges = generateBadges(tech);
     const repoUrl = `https://github.com/${owner}/${repo}`;
-    const { installation: suggestedInstall } = generateInstallUsage(repoUrl, projectType);
+    const { installation: suggestedInstall } = generateInstallUsage(repoUrl, fullAnalysis.projectType, fullAnalysis.packageManager);
 
-    const stream = await groqStream(
+    const stream = await nvidiaStream(
       "You output only valid GitHub-flavored Markdown.",
-      buildModeBPrompt(owner, repo, displayTitle, projectType, fileContents, suggestedInstall, theme)
+      buildModeBPrompt(
+        owner,
+        repo,
+        displayTitle,
+        fullAnalysis.projectType,
+        fileContents,
+        suggestedInstall,
+        theme,
+        fullAnalysis,
+      ),
     );
 
     if (!stream) throw new Error("No stream body");
 
-    
     const encoder = new TextEncoder();
     const decoder = new TextDecoder();
 
     const readableStream = new ReadableStream({
       async start(controller) {
-        
-        controller.enqueue(encoder.encode(JSON.stringify({ 
-          type: "metadata", 
-          tech, 
-          analysis 
+        controller.enqueue(encoder.encode(JSON.stringify({
+          type: "metadata",
+          tech,
+          analysis: fullAnalysis,
         }) + "\n\n"));
 
         const reader = stream.getReader();
@@ -93,12 +96,12 @@ export async function POST(req: Request) {
                 const json = JSON.parse(data);
                 const content = json.choices[0]?.delta?.content || "";
                 if (content) {
-                  controller.enqueue(encoder.encode(JSON.stringify({ 
-                    type: "content", 
-                    content 
+                  controller.enqueue(encoder.encode(JSON.stringify({
+                    type: "content",
+                    content,
                   }) + "\n\n"));
                 }
-              } catch (e) {}
+              } catch {}
             }
           }
         }

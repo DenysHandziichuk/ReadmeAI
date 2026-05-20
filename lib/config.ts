@@ -5,6 +5,9 @@ const configSchema = z.object({
     clientId: z.string(),
     clientSecret: z.string(),
   }),
+  nvidia: z.object({
+    apiKey: z.string(),
+  }),
   app: z.object({
     baseUrl: z.string().url(),
   }),
@@ -14,6 +17,9 @@ const envConfig = {
   github: {
     clientId: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
+  },
+  nvidia: {
+    apiKey: process.env.NVIDIA_API_KEY,
   },
   app: {
     baseUrl: process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000",

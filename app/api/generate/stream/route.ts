@@ -19,6 +19,24 @@ export async function POST(req: Request) {
   }
 
   const { owner, repo, theme = "startup" } = await req.json();
+
+  let isOrgRepo = false;
+  try {
+    const orgsRes = await fetch("https://api.github.com/user/orgs?per_page=100", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/vnd.github+json",
+      },
+    });
+    if (orgsRes.ok) {
+      const orgsData = await orgsRes.json();
+      isOrgRepo = orgsData.some((org: { login: string }) => org.login === owner);
+    } else if (orgsRes.status === 403) {
+      console.warn("Token missing read:org scope — user should re-authenticate");
+    }
+  } catch (err) {
+    console.error("Failed to check org membership:", err);
+  }
   const displayTitle = formatRepoTitle(repo);
 
   try {
@@ -61,6 +79,7 @@ export async function POST(req: Request) {
         suggestedInstall,
         theme,
         fullAnalysis,
+        isOrgRepo,
       ),
     );
 

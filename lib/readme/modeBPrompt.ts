@@ -9,6 +9,7 @@ export function buildModeBPrompt(
   suggestedInstall: string = "",
   theme: string = "startup",
   analysis?: ProjectMetadata,
+  isOrgRepo: boolean = false,
 ) {
   const themeInstructions = {
     startup: "Heavy on emojis, marketing-focused, catchy headings, and a high-energy tone. Every section heading MUST start with exactly one emoji.",
@@ -161,6 +162,7 @@ PROJECT INFO
 
 Repo: ${owner}/${repo}
 Detected type: ${projectType}
+${isOrgRepo ? `Organization: This is an organization repository owned by ${owner}` : ""}
 Suggested baseline install steps:
 ${suggestedInstall}
 

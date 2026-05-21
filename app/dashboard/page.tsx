@@ -1,8 +1,6 @@
 import { cookies } from "next/headers";
-import RepoSearch from "@/components/RepoSearch";
+import DashboardClient from "@/components/DashboardClient";
 import PageTransition from "@/components/PageTransition";
-import { redirect } from "next/navigation";
-import HistoryList from "@/components/HistoryList";
 
 import { config } from "@/lib/config";
 
@@ -31,27 +29,7 @@ export default async function DashboardPage() {
   return (
     <PageTransition>
       <main className="linear-bg min-h-screen bg-black px-6 py-14 pt-24 text-white">
-        <div className="mx-auto max-w-5xl space-y-10">
-          <div className="space-y-3">
-            <h1 className="text-5xl font-bold tracking-tight">
-              Choose a Repository
-            </h1>
-
-            <p className="max-w-xl text-lg text-zinc-400">
-              Select a repo and instantly generate a{" "}
-              <span className="font-medium text-white">
-                product-style README
-              </span>
-              .
-            </p>
-          </div>
-
-          <RepoSearch repos={repos} />
-
-          <div className="pt-10 border-t border-zinc-900">
-            <HistoryList />
-          </div>
-        </div>
+        <DashboardClient personalRepos={repos} />
       </main>
     </PageTransition>
   );

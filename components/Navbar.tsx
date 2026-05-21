@@ -15,13 +15,6 @@ export default function Navbar() {
   const history = useReadmeHistory();
   const router = useRouter();
 
-  const handleDashboardClick = (e: React.MouseEvent) => {
-    if (!user) {
-      e.preventDefault();
-      setOpen(true);
-    }
-  };
-
   const handleRestore = (item: StoredReadme) => {
     setReadme(item);
     setHistoryOpen(false);
@@ -84,14 +77,23 @@ export default function Navbar() {
               </div>
             )}
 
-        <Link
-          href="/dashboard"
-          onClick={handleDashboardClick}
-          className="flex items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-2 text-xs font-bold text-zinc-300 transition hover:bg-zinc-800 hover:text-white"
-        >
-          <LayoutDashboard size={16} />
-          Dashboard
-        </Link>
+        {user ? (
+          <Link
+            href="/dashboard"
+            className="flex items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-2 text-xs font-bold text-zinc-300 transition hover:bg-zinc-800 hover:text-white"
+          >
+            <LayoutDashboard size={16} />
+            Dashboard
+          </Link>
+        ) : (
+          <button
+            onClick={() => setOpen(true)}
+            className="flex items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-2 text-xs font-bold text-zinc-300 transition hover:bg-zinc-800 hover:text-white"
+          >
+            <LayoutDashboard size={16} />
+            Dashboard
+          </button>
+        )}
 
         {user && (
           <Link
@@ -103,24 +105,24 @@ export default function Navbar() {
           </Link>
         )}
 
-            {user ? (
-              <div className="flex items-center gap-3 pl-2">
-                <div className="hidden text-right md:block">
-                  <p className="text-[10px] font-bold text-white leading-none">{user.name || user.login}</p>
-                  <p className="text-[9px] text-zinc-500 font-mono mt-1">@{user.login}</p>
-                </div>
-                <div className="h-9 w-9 overflow-hidden rounded-xl border-2 border-zinc-800 bg-zinc-900">
-                  <img src={user.avatar_url} alt={user.login} className="h-full w-full object-cover" />
-                </div>
-              </div>
-            ) : (
-              <button
-                onClick={() => setOpen(true)}
-                className="rounded-xl bg-white px-5 py-2 text-xs font-bold text-black transition hover:bg-zinc-200"
-              >
-                Sign In
-              </button>
-            )}
+        {user ? (
+          <div className="flex items-center gap-3 pl-2">
+            <div className="hidden text-right md:block">
+              <p className="text-[10px] font-bold text-white leading-none">{user.name || user.login}</p>
+              <p className="text-[9px] text-zinc-500 font-mono mt-1">@{user.login}</p>
+            </div>
+            <div className="h-9 w-9 overflow-hidden rounded-xl border-2 border-zinc-800 bg-zinc-900">
+              <img src={user.avatar_url} alt={user.login} className="h-full w-full object-cover" />
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={() => setOpen(true)}
+            className="rounded-xl bg-white px-5 py-2 text-xs font-bold text-black transition hover:bg-zinc-200"
+          >
+            Sign In
+          </button>
+        )}
           </div>
         </nav>
       </div>

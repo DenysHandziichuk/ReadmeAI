@@ -30,6 +30,24 @@ export async function POST(req: Request) {
     );
   }
 
+  let isOrgRepo = false;
+  try {
+    const orgsRes = await fetch("https://api.github.com/user/orgs?per_page=100", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/vnd.github+json",
+      },
+    });
+    if (orgsRes.ok) {
+      const orgsData = await orgsRes.json();
+      isOrgRepo = orgsData.some((org: { login: string }) => org.login === owner);
+    } else if (orgsRes.status === 403) {
+      console.warn("Token missing read:org scope — user should re-authenticate");
+    }
+  } catch (err) {
+    console.error("Failed to check org membership:", err);
+  }
+
   try {
     const files = await fetchRepoFiles(owner, repo, token);
 
@@ -68,16 +86,17 @@ export async function POST(req: Request) {
 
     const aiReadmeBody = await nvidiaRewrite(
       "You output only valid GitHub-flavored Markdown.",
-      buildModeBPrompt(
-        owner,
-        repo,
-        displayTitle,
-        fullAnalysis.projectType,
-        fileContents,
-        suggestedInstall,
-        theme,
-        fullAnalysis,
-      ),
+    buildModeBPrompt(
+          owner,
+          repo,
+          displayTitle,
+          fullAnalysis.projectType,
+          fileContents,
+          suggestedInstall,
+          theme,
+          fullAnalysis,
+          isOrgRepo,
+        ),
     );
 
     let finalReadme = aiReadmeBody.replace("{{BADGES}}", badges);

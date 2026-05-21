@@ -1,32 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useAuthModal } from "./AuthModal";
+import { useState } from "react";
+import { useAuthModal, useAuthUser } from "./AuthModal";
 import { useReadmeHistory, setReadme, StoredReadme } from "@/lib/store/readmeStore";
 import { useRouter } from "next/navigation";
-import { History, LayoutDashboard, Zap } from "lucide-react";
+import { History, LayoutDashboard, Settings, Zap } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
   const { setOpen } = useAuthModal();
-  const [user, setUser] = useState<any>(null);
+  const { user } = useAuthUser();
   const [historyOpen, setHistoryOpen] = useState(false);
   const history = useReadmeHistory();
   const router = useRouter();
-
-  useEffect(() => {
-    async function checkUser() {
-      try {
-        const res = await fetch("/api/github/user");
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data);
-        }
-      } catch (err) {}
-    }
-    checkUser();
-  }, []);
 
   const handleDashboardClick = (e: React.MouseEvent) => {
     if (!user) {
@@ -97,14 +84,24 @@ export default function Navbar() {
               </div>
             )}
 
-            <Link
-              href="/dashboard"
-              onClick={handleDashboardClick}
-              className="flex items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-2 text-xs font-bold text-zinc-300 transition hover:bg-zinc-800 hover:text-white"
-            >
-              <LayoutDashboard size={16} />
-              Dashboard
-            </Link>
+        <Link
+          href="/dashboard"
+          onClick={handleDashboardClick}
+          className="flex items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-2 text-xs font-bold text-zinc-300 transition hover:bg-zinc-800 hover:text-white"
+        >
+          <LayoutDashboard size={16} />
+          Dashboard
+        </Link>
+
+        {user && (
+          <Link
+            href="/settings"
+            className="flex items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-2 text-xs font-bold text-zinc-300 transition hover:bg-zinc-800 hover:text-white"
+          >
+            <Settings size={16} />
+            Settings
+          </Link>
+        )}
 
             {user ? (
               <div className="flex items-center gap-3 pl-2">

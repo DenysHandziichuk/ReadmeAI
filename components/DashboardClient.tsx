@@ -17,30 +17,69 @@ type Repo = {
 export default function DashboardClient({ personalRepos }: { personalRepos: Repo[] }) {
   const { settings } = useUserSettings();
   const [orgRepos, setOrgRepos] = useState<Repo[]>([]);
-  const [loadingOrgs, setLoadingOrgs] = useState(false);
+  const [loadingOrgs, setLoadingOrgs] = useState(true);
   const [orgErrors, setOrgErrors] = useState<string[]>([]);
+  const [availableOrgs, setAvailableOrgs] = useState<string[]>([]);
 
   useEffect(() => {
-    async function fetchOrgRepos() {
-      if (!settings.shareRepos || settings.allowedOrgs.length === 0) {
-        setOrgRepos([]);
-        setOrgErrors([]);
-        return;
-      }
+    let cancelled = false;
 
+    async function load() {
       setLoadingOrgs(true);
       setOrgErrors([]);
+
       try {
+        const orgsRes = await fetch("/api/github/orgs");
+
+        if (!orgsRes.ok) {
+          if (!cancelled) {
+            setOrgRepos([]);
+            setAvailableOrgs([]);
+            setLoadingOrgs(false);
+          }
+          return;
+        }
+
+        const orgsData = await orgsRes.json();
+        const allOrgs: string[] = (orgsData.orgs || []).map(
+          (o: { login: string }) => o.login,
+        );
+
+        if (!cancelled) setAvailableOrgs(allOrgs);
+
+        if (allOrgs.length === 0) {
+          if (!cancelled) {
+            setOrgRepos([]);
+            setLoadingOrgs(false);
+          }
+          return;
+        }
+
+        const targetOrgs =
+          settings.shareRepos && settings.allowedOrgs.length > 0
+            ? settings.allowedOrgs.filter((o) => allOrgs.includes(o))
+            : allOrgs;
+
+        if (targetOrgs.length === 0) {
+          if (!cancelled) {
+            setOrgRepos([]);
+            setLoadingOrgs(false);
+          }
+          return;
+        }
+
         const results = await Promise.allSettled(
-          settings.allowedOrgs.map(async (org) => {
-            const res = await fetch(`/api/github/org-repos?org=${encodeURIComponent(org)}`);
-            if (!res.ok) {
-              throw new Error(org);
-            }
-            const data = await res.json();
-            return data.repos || [];
+          targetOrgs.map(async (org) => {
+            const r = await fetch(
+              `/api/github/org-repos?org=${encodeURIComponent(org)}`,
+            );
+            if (!r.ok) throw new Error(org);
+            const d = await r.json();
+            return d.repos || [];
           }),
         );
+
+        if (cancelled) return;
 
         const repos: Repo[] = [];
         const errors: string[] = [];
@@ -48,23 +87,32 @@ export default function DashboardClient({ personalRepos }: { personalRepos: Repo
           if (result.status === "fulfilled") {
             repos.push(...result.value);
           } else {
-            const orgName = result.reason?.message || "unknown";
-            errors.push(orgName);
+            errors.push(result.reason?.message || "unknown");
           }
         }
+
         setOrgRepos(repos);
         setOrgErrors(errors);
       } catch {
-        setOrgRepos([]);
+        if (!cancelled) setOrgRepos([]);
       } finally {
-        setLoadingOrgs(false);
+        if (!cancelled) setLoadingOrgs(false);
       }
     }
 
-    fetchOrgRepos();
+    load();
+
+    return () => {
+      cancelled = true;
+    };
   }, [settings.shareRepos, settings.allowedOrgs]);
 
   const allRepos = [...personalRepos, ...orgRepos];
+
+  const displayedOrgs =
+    settings.shareRepos && settings.allowedOrgs.length > 0
+      ? settings.allowedOrgs
+      : availableOrgs;
 
   return (
     <div className="mx-auto max-w-5xl space-y-10">
@@ -81,11 +129,12 @@ export default function DashboardClient({ personalRepos }: { personalRepos: Repo
         </p>
       </div>
 
-      {settings.shareRepos && settings.allowedOrgs.length > 0 && (
+      {displayedOrgs.length > 0 && (
         <div className="flex items-center gap-3 rounded-xl border border-green-500/20 bg-green-500/5 px-4 py-3">
           <Building2 size={16} className="text-green-400 shrink-0" />
           <p className="text-xs text-green-300">
-            Showing repositories from <span className="font-bold">{settings.allowedOrgs.join(", ")}</span>
+            Showing repositories from{" "}
+            <span className="font-bold">{displayedOrgs.join(", ")}</span>
           </p>
           <Link
             href="/settings"
@@ -101,8 +150,16 @@ export default function DashboardClient({ personalRepos }: { personalRepos: Repo
         <div className="flex items-center gap-3 rounded-xl border border-yellow-500/20 bg-yellow-500/5 px-4 py-3">
           <AlertTriangle size={16} className="text-yellow-400 shrink-0" />
           <p className="text-xs text-yellow-300">
-            Could not load repos from <span className="font-bold">{orgErrors.join(", ")}</span>. Check your access in{" "}
-            <Link href="/settings" className="underline hover:text-yellow-200 transition">Settings</Link>.
+            Could not load repos from{" "}
+            <span className="font-bold">{orgErrors.join(", ")}</span>. Check
+            your access in{" "}
+            <Link
+              href="/settings"
+              className="underline hover:text-yellow-200 transition"
+            >
+              Settings
+            </Link>
+            .
           </p>
         </div>
       )}
@@ -114,22 +171,6 @@ export default function DashboardClient({ personalRepos }: { personalRepos: Repo
         </div>
       ) : (
         <RepoSearch repos={allRepos} />
-      )}
-
-      {!settings.shareRepos && (
-        <div className="rounded-xl border border-dashed border-zinc-800 p-6 text-center">
-          <Building2 size={24} className="mx-auto mb-2 text-zinc-700" />
-          <p className="text-sm text-zinc-500">
-            Want to include organization repositories?
-          </p>
-          <Link
-            href="/settings"
-            className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-green-400 hover:text-green-300 transition"
-          >
-            <Settings size={12} />
-            Enable in Settings
-          </Link>
-        </div>
       )}
 
       <div className="pt-10 border-t border-zinc-900">

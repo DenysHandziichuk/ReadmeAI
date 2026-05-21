@@ -3,24 +3,64 @@
 import { useEffect, useState, createContext, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Github, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+type AuthUser = {
+  name: string;
+  login: string;
+  avatar_url: string;
+} | null;
 
 const AuthModalContext = createContext<{
   open: boolean;
   setOpen: (val: boolean) => void;
 }>({ open: false, setOpen: () => {} });
 
+const AuthUserContext = createContext<{
+  user: AuthUser;
+  loading: boolean;
+}>({ user: null, loading: true });
+
 export function AuthModalProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
+  const [user, setUser] = useState<AuthUser>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        const res = await fetch("/api/github/user");
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data);
+        } else {
+          setUser(null);
+        }
+      } catch {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+    checkAuth();
+  }, []);
+
   return (
-    <AuthModalContext.Provider value={{ open, setOpen }}>
-      {children}
-      <AuthModalInternal />
-    </AuthModalContext.Provider>
+    <AuthUserContext.Provider value={{ user, loading }}>
+      <AuthModalContext.Provider value={{ open, setOpen }}>
+        {children}
+        <AuthModalInternal />
+      </AuthModalContext.Provider>
+    </AuthUserContext.Provider>
   );
 }
 
 export function useAuthModal() {
   return useContext(AuthModalContext);
+}
+
+export function useAuthUser() {
+  return useContext(AuthUserContext);
 }
 
 function AuthModalInternal() {
@@ -32,7 +72,7 @@ function AuthModalInternal() {
     }
     if (open) window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
-  }, [open]);
+  }, [open, setOpen]);
 
   return (
     <AnimatePresence>
@@ -94,12 +134,24 @@ function AuthModalInternal() {
 
 export default function AuthModal() {
   const { setOpen } = useAuthModal();
+  const { user, loading } = useAuthUser();
+  const router = useRouter();
+
+  function handleClick() {
+    if (user) {
+      router.push("/dashboard");
+    } else {
+      setOpen(true);
+    }
+  }
+
   return (
     <button
-      onClick={() => setOpen(true)}
-      className="rounded-2xl bg-white px-6 py-3 font-semibold text-black shadow-lg transition hover:bg-zinc-200"
+      onClick={handleClick}
+      disabled={loading}
+      className="rounded-2xl bg-white px-6 py-3 font-semibold text-black shadow-lg transition hover:bg-zinc-200 disabled:opacity-50"
     >
-      Get Started →
+      {loading ? "Loading..." : user ? "Go to Dashboard →" : "Get Started →"}
     </button>
   );
 }

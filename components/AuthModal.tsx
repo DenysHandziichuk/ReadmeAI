@@ -151,7 +151,7 @@ export default function AuthModal() {
       disabled={loading}
       className="rounded-2xl bg-white px-6 py-3 font-semibold text-black shadow-lg transition hover:bg-zinc-200 disabled:opacity-50"
     >
-      {loading ? "Loading..." : user ? "Go to Dashboard →" : "Get Started →"}
+      {loading ? "Loading..." : user ? "Go to Dashboard →" : "Try Out →"}
     </button>
   );
 }

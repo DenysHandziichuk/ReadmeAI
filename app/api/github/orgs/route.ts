@@ -14,43 +14,40 @@ export async function GET() {
     Accept: "application/vnd.github+json",
   };
 
-  const orgsRes = await fetch(
-    "https://api.github.com/user/orgs?per_page=100",
-    { headers },
-  );
+  let orgs: { login: string; avatar_url: string; description: string | null }[] = [];
+  let needsReauth = false;
 
-  if (!orgsRes.ok) {
-    const errorText = await orgsRes.text();
-    console.error(`GitHub /user/orgs failed: ${orgsRes.status}`, errorText);
-
-    if (orgsRes.status === 403 || orgsRes.status === 401) {
-      return NextResponse.json(
-        {
-          error: "missing_scope",
-          message: "Your token does not have the read:org scope. Please re-authenticate to grant access.",
-          orgs: [],
-        },
-        { status: 403 },
-      );
-    }
-
-    return NextResponse.json(
-      { error: "Failed to fetch organizations", details: errorText },
-      { status: orgsRes.status },
+  // Strategy 1: /user/orgs (requires read:org scope)
+  try {
+    const orgsRes = await fetch(
+      "https://api.github.com/user/orgs?per_page=100",
+      { headers },
     );
+
+    const grantedScopes = orgsRes.headers.get("x-oauth-scopes") || "";
+    const hasReadOrg = grantedScopes.includes("read:org") || grantedScopes.includes("org");
+    console.log(`Token scopes: "${grantedScopes}", hasReadOrg: ${hasReadOrg}`);
+
+    if (orgsRes.ok) {
+      const orgsData = await orgsRes.json();
+      if (Array.isArray(orgsData)) {
+        orgs = orgsData;
+        console.log(`/user/orgs returned ${orgs.length} orgs`);
+      }
+    } else if (orgsRes.status === 403 || orgsRes.status === 401) {
+      needsReauth = true;
+    }
+  } catch (err) {
+    console.error("/user/orgs fetch error:", err);
   }
 
-  let orgs = await orgsRes.json();
-
-  if (!Array.isArray(orgs)) {
-    console.error("GitHub /user/orgs returned non-array:", orgs);
-    orgs = [];
-  }
-
+  // Strategy 2: Scan ALL repos the user has access to and extract org owners
+  // This discovers orgs even when membership is private/concealed
   if (orgs.length === 0) {
+    console.log("Trying all-repos scan for org discovery...");
     try {
       const reposRes = await fetch(
-        "https://api.github.com/user/repos?per_page=100&sort=updated&affiliation=organization_member",
+        "https://api.github.com/user/repos?per_page=100&sort=updated&affiliation=owner,collaborator,organization_member&visibility=all",
         { headers },
       );
       if (reposRes.ok) {
@@ -65,21 +62,73 @@ export async function GET() {
             });
           }
         }
-        orgs = Array.from(orgOwners.entries()).map(([login, data]) => ({
-          login,
-          avatar_url: data.avatar_url,
-          description: data.description,
-        }));
+        if (orgOwners.size > 0) {
+          orgs = Array.from(orgOwners.entries()).map(([login, data]) => ({
+            login,
+            avatar_url: data.avatar_url,
+            description: data.description,
+          }));
+          console.log(`Found ${orgs.length} orgs from all-repos scan`);
+        }
+      } else {
+        console.error("All-repos scan failed:", reposRes.status);
       }
-    } catch {}
+    } catch (err) {
+      console.error("All-repos scan error:", err);
+    }
   }
 
-  const cleaned = orgs.map((org: { login: string; avatar_url: string; description: string | null }) => ({
-    login: org.login,
-    avatar_url: org.avatar_url,
-    description: org.description,
-  }));
+  // Strategy 3: Public org memberships
+  if (orgs.length === 0) {
+    console.log("Trying public org memberships...");
+    try {
+      const userRes = await fetch("https://api.github.com/user", { headers });
+      if (userRes.ok) {
+        const userData = await userRes.json();
+        const username = userData.login;
+        const publicOrgsRes = await fetch(
+          `https://api.github.com/users/${username}/orgs?per_page=100`,
+          { headers },
+        );
+        if (publicOrgsRes.ok) {
+          const publicOrgs = await publicOrgsRes.json();
+          if (Array.isArray(publicOrgs) && publicOrgs.length > 0) {
+            orgs = publicOrgs;
+            console.log(`Found ${orgs.length} orgs from public profile`);
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Public orgs fallback error:", err);
+    }
+  }
 
-  console.log(`Fetched ${cleaned.length} organizations`);
-  return NextResponse.json({ orgs: cleaned });
+  // Enrich orgs with description from /orgs/{login} if missing
+  const cleaned = await Promise.all(
+    orgs.map(async (org) => {
+      if (org.description) return org;
+      try {
+        const orgRes = await fetch(
+          `https://api.github.com/orgs/${org.login}`,
+          { headers },
+        );
+        if (orgRes.ok) {
+          const data = await orgRes.json();
+          return {
+            login: org.login,
+            avatar_url: data.avatar_url || org.avatar_url,
+            description: data.description,
+          };
+        }
+      } catch {}
+      return org;
+    }),
+  );
+
+  console.log(`Final: ${cleaned.length} organizations found`);
+
+  return NextResponse.json({
+    orgs: cleaned,
+    needsReauth: needsReauth && cleaned.length === 0,
+  });
 }

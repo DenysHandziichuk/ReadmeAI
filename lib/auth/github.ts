@@ -11,6 +11,7 @@ export function githubAuthUrl(forceReauth = false) {
 
   if (forceReauth) {
     params.set("allow_signup", "true");
+    params.set("login", "true");
   }
 
   return `https://github.com/login/oauth/authorize?${params.toString()}`;

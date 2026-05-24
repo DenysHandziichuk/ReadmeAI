@@ -5,12 +5,12 @@ import { useState } from "react";
 import { useAuthModal, useAuthUser } from "./AuthModal";
 import { useReadmeHistory, setReadme, StoredReadme } from "@/lib/store/readmeStore";
 import { useRouter } from "next/navigation";
-import { History, LayoutDashboard, Settings, Zap } from "lucide-react";
+import { History, LayoutDashboard, LogOut, Settings, Zap } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
   const { setOpen } = useAuthModal();
-  const { user } = useAuthUser();
+  const { user, logout } = useAuthUser();
   const [historyOpen, setHistoryOpen] = useState(false);
   const history = useReadmeHistory();
   const router = useRouter();
@@ -105,17 +105,24 @@ export default function Navbar() {
           </Link>
         )}
 
-        {user ? (
-          <div className="flex items-center gap-3 pl-2">
-            <div className="hidden text-right md:block">
-              <p className="text-[10px] font-bold text-white leading-none">{user.name || user.login}</p>
-              <p className="text-[9px] text-zinc-500 font-mono mt-1">@{user.login}</p>
-            </div>
-            <div className="h-9 w-9 overflow-hidden rounded-xl border-2 border-zinc-800 bg-zinc-900">
-              <img src={user.avatar_url} alt={user.login} className="h-full w-full object-cover" />
-            </div>
-          </div>
-        ) : (
+  {user ? (
+  <div className="flex items-center gap-3 pl-2">
+    <div className="hidden text-right md:block">
+      <p className="text-[10px] font-bold text-white leading-none">{user.name || user.login}</p>
+      <p className="text-[9px] text-zinc-500 font-mono mt-1">@{user.login}</p>
+    </div>
+    <div className="h-9 w-9 overflow-hidden rounded-xl border-2 border-zinc-800 bg-zinc-900">
+      <img src={user.avatar_url} alt={user.login} className="h-full w-full object-cover" />
+    </div>
+    <button
+      onClick={logout}
+      className="flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 transition hover:border-red-500/50 hover:bg-red-500/10 hover:text-red-400"
+      title="Log out"
+    >
+      <LogOut size={16} />
+    </button>
+  </div>
+  ) : (
           <button
             onClick={() => setOpen(true)}
             className="rounded-xl bg-white px-5 py-2 text-xs font-bold text-black transition hover:bg-zinc-200"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, createContext, useContext } from "react";
+import { useEffect, useState, useCallback, createContext, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Github, X } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -19,7 +19,8 @@ const AuthModalContext = createContext<{
 const AuthUserContext = createContext<{
   user: AuthUser;
   loading: boolean;
-}>({ user: null, loading: true });
+  logout: () => Promise<void>;
+}>({ user: null, loading: true, logout: async () => {} });
 
 export function AuthModalProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -45,8 +46,14 @@ export function AuthModalProvider({ children }: { children: React.ReactNode }) {
     checkAuth();
   }, []);
 
+  const logout = useCallback(async () => {
+    await fetch("/api/auth/github/disconnect", { method: "POST" });
+    setUser(null);
+    window.location.href = "/";
+  }, []);
+
   return (
-    <AuthUserContext.Provider value={{ user, loading }}>
+    <AuthUserContext.Provider value={{ user, loading, logout }}>
       <AuthModalContext.Provider value={{ open, setOpen }}>
         {children}
         <AuthModalInternal />

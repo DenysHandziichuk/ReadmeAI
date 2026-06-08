@@ -1,10 +1,45 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import ReadmeDemo from "@/components/ReadmeDemo";
 import AuthModal from "@/components/AuthModal";
 import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+
+function parseGithubUrl(input: string): { owner: string; repo: string } | null {
+  const trimmed = input.trim();
+  const fullMatch = trimmed.match(
+    /^https?:\/\/github\.com\/([^/]+)\/([^/\s?#]+)/,
+  );
+  if (fullMatch) return { owner: fullMatch[1], repo: fullMatch[2] };
+
+  const shorthand = trimmed.match(/^([^/\s]+)\/([^/\s]+)$/);
+  if (shorthand) return { owner: shorthand[1], repo: shorthand[2] };
+
+  return null;
+}
 
 export default function HomePage() {
+  const router = useRouter();
+  const [repoInput, setRepoInput] = useState("");
+  const [error, setError] = useState("");
+
+  function handleTryOut(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+
+    const parsed = parseGithubUrl(repoInput);
+    if (!parsed) {
+      setError(
+        "Enter a valid GitHub URL (e.g. https://github.com/owner/repo) or owner/repo",
+      );
+      return;
+    }
+
+    router.push(`/read/${parsed.owner}/${parsed.repo}`);
+  }
+
   return (
     <main className="linear-bg min-h-screen overflow-hidden text-white">
       <section className="flex items-center justify-center px-6 pt-24 pb-20">
@@ -42,14 +77,46 @@ export default function HomePage() {
             badges, features, install steps, and instant commit or PR support.
           </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.35 }}
-            className="flex justify-center"
-          >
-            <AuthModal />
-          </motion.div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.35 }}
+          className="mx-auto flex max-w-xl flex-col items-center gap-5"
+        >
+          <AuthModal />
+          <div className="flex w-full items-center gap-4">
+            <div className="h-px flex-1 bg-zinc-800" />
+            <span className="text-xs font-bold tracking-widest text-zinc-600 uppercase">
+              or paste a repo link
+            </span>
+            <div className="h-px flex-1 bg-zinc-800" />
+          </div>
+          <form onSubmit={handleTryOut} className="w-full flex flex-col gap-3">
+            <div className="flex gap-3">
+              <input
+                type="text"
+                value={repoInput}
+                onChange={(e) => {
+                  setRepoInput(e.target.value);
+                  setError("");
+                }}
+                placeholder="Paste a GitHub repo URL... (e.g. vercel/next.js)"
+                className="flex-1 rounded-2xl border border-zinc-800 bg-zinc-950 px-5 py-3 text-sm text-white placeholder-zinc-600 transition outline-none focus:border-zinc-600 focus:ring-1 focus:ring-zinc-700"
+              />
+              <button
+                type="submit"
+                className="flex items-center gap-2 rounded-2xl border border-zinc-800 bg-zinc-900 px-6 py-3 text-sm font-bold text-zinc-300 transition hover:bg-zinc-800 hover:text-white"
+              >
+                Generate
+                <ArrowRight size={16} />
+              </button>
+            </div>
+            {error && <p className="text-left text-xs text-red-400">{error}</p>}
+            <p className="text-xs text-zinc-500">
+              No sign-in required — try it with any public repo.
+            </p>
+          </form>
+        </motion.div>
         </div>
       </section>
 
@@ -101,12 +168,10 @@ export default function HomePage() {
           <h2 className="text-4xl font-bold">Ready to ship premium READMEs?</h2>
 
           <p className="text-lg text-zinc-400">
-            Connect GitHub and generate your first README in seconds.
+            Sign in with GitHub and generate your first README in seconds.
           </p>
 
-          <div className="flex justify-center">
-            <AuthModal />
-          </div>
+          <AuthModal />
         </div>
       </section>
 
